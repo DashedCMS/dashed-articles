@@ -1,0 +1,68 @@
+{
+    "name": "dashed/dashed-articles",
+    "description": "This is my package dashed-articles",
+    "keywords": [
+        "Dashed",
+        "laravel",
+        "dashed-articles"
+    ],
+    "homepage": "https://github.com/Dashed-DEV/dashed-articles",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Robin van Maasakker",
+            "email": "robin@dashed.nl",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "spatie/laravel-package-tools": "^1.15"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^7.0",
+        "orchestra/testbench": "^8.5",
+        "pestphp/pest": "^2.8",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "phpunit/phpunit": "^10.2",
+        "spatie/laravel-ray": "^1.32"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dashed\\DashedArticles\\": "src",
+            "Dashed\\DashedArticles\\Database\\Factories\\": "database/factories"
+        },
+        "files": [
+            "src/Helpers/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dashed\\DashedArticles\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dashed\\DashedArticles\\DashedArticlesServiceProvider"
+            ],
+            "aliases": {
+                "DashedArticles": "Dashed\\DashedArticles\\Facades\\DashedArticles",
+                "Articles": "Dashed\\DashedArticles\\Classes\\Articles"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
