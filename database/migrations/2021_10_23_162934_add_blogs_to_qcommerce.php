@@ -12,6 +12,10 @@ return new class extends Migration {
      */
     public function up()
     {
+        if(Schema::hasTable('dashed__articles')){
+            return;
+        }
+
         Schema::create('dashed__articles', function (Blueprint $table) {
             $table->id();
 
