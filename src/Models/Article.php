@@ -30,11 +30,11 @@ class Article extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'timestamp',
-        'end_date' => 'timestamp',
-        'created_at' => 'timestamp',
-        'updated_at' => 'timestamp',
-        'deleted_at' => 'timestamp',
+        'start_date' => 'datetime:Y-m-d H:i:s',
+        'end_date' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
         'blocks' => 'array',
         'site_ids' => 'array',
     ];
