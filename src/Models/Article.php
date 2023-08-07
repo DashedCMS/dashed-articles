@@ -29,22 +29,19 @@ class Article extends Model
         'content',
     ];
 
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+    protected $casts = [
+        'start_date' => 'timestamp',
+        'end_date' => 'timestamp',
+        'created_at' => 'timestamp',
+        'updated_at' => 'timestamp',
+        'deleted_at' => 'timestamp',
+        'blocks' => 'array',
+        'site_ids' => 'array',
     ];
 
     protected $appends = [
         'status',
         'readingTimeMinutes',
-    ];
-
-    protected $casts = [
-        'blocks' => 'array',
-        'site_ids' => 'array',
     ];
 
     protected $with = [
