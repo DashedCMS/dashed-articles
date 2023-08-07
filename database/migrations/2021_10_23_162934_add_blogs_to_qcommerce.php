@@ -12,26 +12,24 @@ return new class extends Migration {
      */
     public function up()
     {
-        if(Schema::hasTable('dashed__articles')){
-            return;
+        if (!Schema::hasTable('dashed__articles')) {
+            Schema::create('dashed__articles', function (Blueprint $table) {
+                $table->id();
+
+                $table->json('name');
+                $table->json('slug');
+                $table->json('content')->nullable();
+                $table->json('blocks')->nullable();
+                $table->string('site_id');
+                $table->dateTime('start_date')->nullable();
+                $table->dateTime('end_date')->nullable();
+                $table->json('meta_title')->nullable();
+                $table->json('meta_description')->nullable();
+
+                $table->softDeletes();
+                $table->timestamps();
+            });
         }
-
-        Schema::create('dashed__articles', function (Blueprint $table) {
-            $table->id();
-
-            $table->json('name');
-            $table->json('slug');
-            $table->json('content')->nullable();
-            $table->json('blocks')->nullable();
-            $table->string('site_id');
-            $table->dateTime('start_date')->nullable();
-            $table->dateTime('end_date')->nullable();
-            $table->json('meta_title')->nullable();
-            $table->json('meta_description')->nullable();
-
-            $table->softDeletes();
-            $table->timestamps();
-        });
     }
 
     /**
