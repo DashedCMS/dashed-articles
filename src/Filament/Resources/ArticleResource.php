@@ -2,25 +2,29 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Closure;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Dashed\DashedArticles\Models\Article;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
+use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\ListArticles;
-use Dashed\DashedArticles\Models\Article;
-use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
-use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
 
 class ArticleResource extends Resource
 {
@@ -52,104 +56,42 @@ class ArticleResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make([
-                    'default' => 1,
-                    'sm' => 1,
-                    'md' => 1,
-                    'lg' => 1,
-                    'xl' => 6,
-                    '2xl' => 6,
-                ])->schema([
-                    Section::make('Content')
-                        ->schema(array_merge([
-                            TextInput::make('name')
-                                ->label('Name')
-                                ->required()
-                                ->rules([
-                                    'max:255',
-                                ])
-                                ->reactive()
-                                ->afterStateUpdated(function (Closure $set, $state, $livewire) {
-                                    if ($livewire instanceof CreateArticle) {
-                                        $set('slug', Str::slug($state));
-                                    }
-                                }),
-                            TextInput::make('slug')
-                                ->label('Slug')
-                                ->unique('dashed__articles', 'slug', fn ($record) => $record)
-                                ->helperText('Laat leeg om automatisch te laten genereren')
-                                ->rules([
-                                    'max:255',
-                                ]),
-                            Select::make('author_id')
-                                ->label('Auteur')
-                                ->nullable()
-                                ->relationship('author', 'name'),
-                            Select::make('category_id')
-                                ->label('Categorie')
-                                ->nullable()
-                                ->relationship('category', 'name'),
-                            Builder::make('content')
-                                ->blocks(cms()->builder('blocks'))
-                                ->withBlockLabels()
-                                ->columnSpan([
-                                    'default' => 1,
-                                    'sm' => 1,
-                                    'md' => 1,
-                                    'lg' => 1,
-                                    'xl' => 2,
-                                    '2xl' => 2,
-                                ]),
-                        ], static::customBlocksTab(cms()->builder('articleBlocks'))))
-                        ->columns(2)
-                        ->columnSpan([
-                                        'default' => 1,
-                                        'sm' => 1,
-                                        'md' => 1,
-                                        'lg' => 1,
-                                        'xl' => 4,
-                                        '2xl' => 4,
-                            ]),
-                    Grid::make([
-                        'default' => 1,
-                        'sm' => 1,
-                        'md' => 1,
-                        'lg' => 1,
-                        'xl' => 2,
-                        '2xl' => 2,
-                    ])
-                        ->schema([
-                            Section::make('Globale informatie')
-                                ->schema(static::publishTab())
-                                ->collapsed(fn ($livewire) => $livewire instanceof EditArticle)
-                                ->columnSpan([
-                                    'default' => 1,
-                                    'sm' => 1,
-                                    'md' => 1,
-                                    'lg' => 1,
-                                    'xl' => 2,
-                                    '2xl' => 2,
-                                ]),
-                            Section::make('Meta data')
-                                ->schema(static::metadataTab())
-                                ->columnSpan([
-                                    'default' => 1,
-                                    'sm' => 1,
-                                    'md' => 1,
-                                    'lg' => 1,
-                                    'xl' => 2,
-                                    '2xl' => 2,
-                                ]),
-                        ])
-                        ->columnSpan([
-                            'default' => 1,
-                            'sm' => 1,
-                            'md' => 1,
-                            'lg' => 1,
-                            'xl' => 2,
-                            '2xl' => 2,
-                        ]),
-                ]),
+                Section::make('Content')
+                    ->schema(array_merge([
+                        TextInput::make('name')
+                            ->label('Name')
+                            ->required()
+                            ->maxLength(255)
+                            ->reactive()
+                            ->afterStateUpdated(function (Set $set, $state, $livewire) {
+                                if ($livewire instanceof CreateArticle) {
+                                    $set('slug', Str::slug($state));
+                                }
+                            }),
+                        TextInput::make('slug')
+                            ->label('Slug')
+                            ->unique('dashed__articles', 'slug', fn ($record) => $record)
+                            ->helperText('Laat leeg om automatisch te laten genereren')
+                            ->maxLength(255),
+                        Select::make('author_id')
+                            ->label('Auteur')
+                            ->nullable()
+                            ->relationship('author', 'name'),
+                        Select::make('category_id')
+                            ->label('Categorie')
+                            ->nullable()
+                            ->relationship('category', 'name'),
+                        Builder::make('content')
+                            ->blocks(cms()->builder('blocks'))
+                            ->blockLabels()
+                            ->columnSpanFull(),
+                    ], static::customBlocksTab(cms()->builder('articleBlocks'))))
+                    ->columns(2),
+                Section::make('Globale informatie')
+                    ->schema(static::publishTab())
+                    ->collapsed(fn ($livewire) => $livewire instanceof EditArticle),
+                Section::make('Meta data')
+                    ->schema(static::metadataTab()),
             ]);
     }
 
@@ -160,20 +102,11 @@ class ArticleResource extends Resource
                 TextColumn::make('name')
                     ->label('Naam')
                     ->sortable()
-                    ->searchable([
-                        'name',
-                        'slug',
-                        'content',
-                    ]),
-                TextColumn::make('category')
-                    ->label('Categorie')
-                    ->getStateUsing(fn ($record) => $record->category->name ?? '-')
-                    ->searchable([
-                        'content',
-                    ]),
-                TextColumn::make('author')
-                    ->label('Auteur')
-                    ->getStateUsing(fn ($record) => $record->author->name ?? '-'),
+                    ->searchable(query: SearchQuery::make()),
+                TextColumn::make('category.name')
+                    ->label('Categorie'),
+                TextColumn::make('author.name')
+                    ->label('Auteur'),
             ], static::visitableTableColumns()))
             ->filters([
                 SelectFilter::make('category')
@@ -186,6 +119,16 @@ class ArticleResource extends Resource
                     ->relationship('author', 'name'),
 
 
+            ])
+            ->actions([
+                EditAction::make()
+                    ->button(),
+                DeleteAction::make(),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

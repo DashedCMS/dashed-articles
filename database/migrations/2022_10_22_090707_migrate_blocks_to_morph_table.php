@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        foreach(\Dashed\DashedArticles\Models\Article::withTrashed()->get() as $article){
+        foreach(\Dashed\DashedArticles\Models\Article::withTrashed()->get() as $article) {
             $customBlock = new \Dashed\DashedCore\Models\CustomBlock();
             $customBlock->blocks = $article->blocks;
             $customBlock->blockable_type = \Dashed\DashedArticles\Models\Article::class;

@@ -2,17 +2,19 @@
 
 namespace Dashed\DashedArticles\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Dashed\DashedCore\Models\Concerns\HasSearchScope;
 
 class Author extends Model
 {
     use SoftDeletes;
     use HasTranslations;
     use LogsActivity;
+    use HasSearchScope;
 
     protected static $logFillable = true;
 
@@ -27,12 +29,6 @@ class Author extends Model
     public $translatable = [
         'name',
         'slug',
-    ];
-
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
     ];
 
     public function getActivitylogOptions(): LogOptions

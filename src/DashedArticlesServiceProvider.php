@@ -2,16 +2,13 @@
 
 namespace Dashed\DashedArticles;
 
-use Filament\PluginServiceProvider;
-use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
-use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource;
-use Dashed\DashedArticles\Filament\Resources\AuthorResource;
+use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedArticles\Models\Article;
 use Dashed\DashedArticles\Models\ArticleCategory;
-use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
 
-class DashedArticlesServiceProvider extends PluginServiceProvider
+class DashedArticlesServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'dashed-articles';
 
@@ -50,22 +47,6 @@ class DashedArticlesServiceProvider extends PluginServiceProvider
         );
 
         $package
-            ->name('dashed-articles');
-    }
-
-    protected function getPages(): array
-    {
-        return array_merge(parent::getPages(), [
-            ArticlesSettingsPage::class,
-        ]);
-    }
-
-    protected function getResources(): array
-    {
-        return array_merge(parent::getResources(), [
-            ArticleResource::class,
-            ArticleCategoryResource::class,
-            AuthorResource::class,
-        ]);
+            ->name(self::$name);
     }
 }

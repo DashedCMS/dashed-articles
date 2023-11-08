@@ -2,12 +2,13 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages;
 
-use Filament\Resources\Pages\CreateRecord;
-use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
 use Illuminate\Support\Str;
-use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource;
-use Dashed\DashedArticles\Models\ArticleCategory;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Actions\LocaleSwitcher;
+use Filament\Resources\Pages\CreateRecord;
+use Dashed\DashedArticles\Models\ArticleCategory;
+use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
+use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource;
 
 class CreateArticleCategory extends CreateRecord
 {
@@ -15,11 +16,18 @@ class CreateArticleCategory extends CreateRecord
 
     protected static string $resource = ArticleCategoryResource::class;
 
+    protected function getActions(): array
+    {
+        return [
+            LocaleSwitcher::make(),
+        ];
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['slug'] = Str::slug($data['slug'] ?: $data['name']);
 
-        while (ArticleCategory::where('slug->' . $this->activeFormLocale, $data['slug'])->count()) {
+        while (ArticleCategory::where('slug->' . $this->activeLocale, $data['slug'])->count()) {
             $data['slug'] .= Str::random(1);
         }
 

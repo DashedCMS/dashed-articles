@@ -2,15 +2,15 @@
 
 namespace Dashed\DashedArticles\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\View;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Dashed\DashedCore\Classes\Sites;
-use Dashed\DashedCore\Models\Concerns\IsVisitable;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedPages\Models\Page;
+use Illuminate\Support\Facades\App;
+use Dashed\DashedCore\Classes\Sites;
+use Illuminate\Support\Facades\View;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedCore\Models\Concerns\IsVisitable;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class ArticleCategory extends Model
 {
@@ -27,8 +27,6 @@ class ArticleCategory extends Model
 
     protected $casts = [
         'site_ids' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     public function articles()
@@ -82,7 +80,13 @@ class ArticleCategory extends Model
 
     public function getUrl()
     {
-        $url = (Article::getOverviewPage()->getUrl() ?? '/') . '/' . $this->slug;
+        $articlePage = Article::getOverviewPage();
+
+        if(!$articlePage) {
+            return;
+        }
+
+        $url = ($articlePage->getUrl() ?? '/') . '/' . $this->slug;
 
         return LaravelLocalization::localizeUrl($url);
     }

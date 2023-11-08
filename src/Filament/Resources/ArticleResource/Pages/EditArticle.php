@@ -2,15 +2,17 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages;
 
-use Filament\Pages\Actions\Action;
-use Filament\Resources\Pages\EditRecord;
-use Filament\Resources\Pages\EditRecord\Concerns\Translatable;
 use Illuminate\Support\Str;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource;
-use Dashed\DashedArticles\Models\Article;
-use Dashed\DashedCore\Classes\Locales;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Actions\LocaleSwitcher;
+use Dashed\DashedCore\Classes\Locales;
 use Dashed\DashedCore\Models\Redirect;
+use Filament\Resources\Pages\EditRecord;
+use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource;
+use Filament\Resources\Pages\EditRecord\Concerns\Translatable;
 
 class EditArticle extends EditRecord
 {
@@ -20,7 +22,7 @@ class EditArticle extends EditRecord
 
     protected function getActions(): array
     {
-        return array_merge(parent::getActions(), [
+        return [
             Action::make('view_article')
                 ->button()
                 ->label('Bekijk artikel')
@@ -29,8 +31,9 @@ class EditArticle extends EditRecord
             Action::make('Dupliceer artikel')
                 ->action('duplicate')
                 ->color('warning'),
-            $this->getActiveFormLocaleSelectAction(),
-        ]);
+            LocaleSwitcher::make(),
+            DeleteAction::make(),
+        ];
     }
 
     public function duplicate()
@@ -57,14 +60,14 @@ class EditArticle extends EditRecord
             $newMetaData->save();
         }
 
-        return redirect(route('filament.resources.articles.edit', [$new]));
+        return redirect(route('filament.dashed.resources.articles.edit', [$new]));
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['slug'] = Str::slug($data['slug'] ?: $data['name']);
 
-        while (Article::where('id', '!=', $this->record->id)->where('slug->' . $this->activeFormLocale, $data['slug'])->count()) {
+        while (Article::where('id', '!=', $this->record->id)->where('slug->' . $this->activeLocale, $data['slug'])->count()) {
             $data['slug'] .= Str::random(1);
         }
 
@@ -72,9 +75,9 @@ class EditArticle extends EditRecord
 
         //        $content = $data['content'];
         //        $data['content'] = $this->record->content;
-        //        $data['content'][$this->activeFormLocale] = $content;
+        //        $data['content'][$this->activeLocale] = $content;
 
-        Redirect::handleSlugChange($this->record->getTranslation('slug', $this->activeFormLocale), $data['slug']);
+        Redirect::handleSlugChange($this->record->getTranslation('slug', $this->activeLocale), $data['slug']);
 
         return $data;
     }

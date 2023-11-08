@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        foreach(\Dashed\DashedArticles\Models\Article::withTrashed()->get() as $model){
+        foreach(\Dashed\DashedArticles\Models\Article::withTrashed()->get() as $model) {
             $model->site_id = json_encode([$model->site_id]);
             $model->save();
         }

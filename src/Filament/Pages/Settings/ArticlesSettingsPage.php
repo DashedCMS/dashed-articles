@@ -2,14 +2,15 @@
 
 namespace Dashed\DashedArticles\Filament\Pages\Settings;
 
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
+use Filament\Forms\Components\Tabs;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Notifications\Notification;
 use Dashed\DashedCore\Models\Customsetting;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Dashed\DashedPages\Models\Page as PageModel;
 
 class ArticlesSettingsPage extends Page implements HasForms
@@ -20,6 +21,7 @@ class ArticlesSettingsPage extends Page implements HasForms
     protected static ?string $title = 'Artikelen';
 
     protected static string $view = 'dashed-core::settings.pages.default-settings';
+    public array $data = [];
 
     public function mount(): void
     {
@@ -59,6 +61,11 @@ class ArticlesSettingsPage extends Page implements HasForms
         return $tabGroups;
     }
 
+    public function getFormStatePath(): ?string
+    {
+        return 'data';
+    }
+
     public function submit()
     {
         $sites = Sites::getSites();
@@ -67,7 +74,10 @@ class ArticlesSettingsPage extends Page implements HasForms
             Customsetting::set('article_overview_page_id', $this->form->getState()["article_overview_page_id_{$site['id']}"], $site['id']);
         }
 
-        $this->notify('success', 'De artikel instellingen zijn opgeslagen');
+        Notification::make()
+            ->title('De artikel instellingen zijn opgeslagen')
+            ->success()
+            ->send();
 
         return redirect(ArticlesSettingsPage::getUrl());
     }

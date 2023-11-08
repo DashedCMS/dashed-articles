@@ -2,20 +2,25 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Closure;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Dashed\DashedArticles\Models\Author;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\EditAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\ListAuthor;
-use Dashed\DashedArticles\Models\Author;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
 
 class AuthorResource extends Resource
 {
@@ -48,51 +53,23 @@ class AuthorResource extends Resource
                         TextInput::make('name')
                             ->label('Name')
                             ->required()
-                            ->rules([
-                                'max:255',
-                            ])
+                            ->maxLength(255)
                             ->reactive()
-                            ->afterStateUpdated(function (Closure $set, $state, $livewire) {
+                            ->afterStateUpdated(function (Set $set, $state, $livewire) {
                                 if ($livewire instanceof CreateAuthor) {
                                     $set('slug', Str::slug($state));
                                 }
-                            })
-                            ->columnSpan([
-                                'default' => 2,
-                                'sm' => 2,
-                                'md' => 2,
-                                'lg' => 2,
-                                'xl' => 1,
-                                '2xl' => 1,
-                            ]),
+                            }),
                         TextInput::make('slug')
                             ->label('Slug')
                             ->unique('dashed__article_authors', 'slug', fn ($record) => $record)
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->required()
-                            ->rules([
-                                'max:255',
-                            ])
-                            ->columnSpan([
-                                'default' => 2,
-                                'sm' => 2,
-                                'md' => 2,
-                                'lg' => 2,
-                                'xl' => 1,
-                                '2xl' => 1,
-                            ]),
+                            ->maxLength(255),
                         FileUpload::make('image')
                             ->directory('dashed/article-authors/images')
                             ->name('Afbeelding')
-                            ->image()
-                            ->columnSpan([
-                                'default' => 2,
-                                'sm' => 2,
-                                'md' => 2,
-                                'lg' => 2,
-                                'xl' => 2,
-                                '2xl' => 2,
-                            ]),
+                            ->image(),
                     ]))->columns(2),
             ]);
     }
@@ -104,13 +81,20 @@ class AuthorResource extends Resource
                 TextColumn::make('name')
                     ->label('Naam')
                     ->sortable()
-                    ->searchable([
-                        'name',
-                        'slug',
-                    ]),
+                    ->searchable(query: SearchQuery::make()),
             ])
             ->filters([
                 //
+            ])
+            ->actions([
+                EditAction::make()
+                    ->button(),
+                DeleteAction::make(),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
