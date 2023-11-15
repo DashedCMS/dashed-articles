@@ -27,6 +27,7 @@ class Article extends Model
         'name',
         'slug',
         'content',
+        'customBlocks'
     ];
 
     protected $casts = [

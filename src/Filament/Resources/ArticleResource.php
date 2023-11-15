@@ -76,10 +76,12 @@ class ArticleResource extends Resource
                         Select::make('author_id')
                             ->label('Auteur')
                             ->nullable()
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('author', 'name'),
                         Select::make('category_id')
                             ->label('Categorie')
                             ->nullable()
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('category', 'name'),
                         Builder::make('content')
                             ->blocks(cms()->builder('blocks'))
