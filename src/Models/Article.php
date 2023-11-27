@@ -27,19 +27,17 @@ class Article extends Model
         'name',
         'slug',
         'content',
-        'customBlocks'
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
-        'blocks' => 'array',
         'site_ids' => 'array',
+        'content' => 'array',
     ];
 
     protected $appends = [
         'status',
-        'readingTimeMinutes',
     ];
 
     protected $with = [
@@ -67,7 +65,8 @@ class Article extends Model
 
     public function getReadingTimeMinutesAttribute()
     {
-        return floor(str_word_count(strip_tags($this->getRawOriginal('content') . json_encode($this->contentBlocks))) / 200);
+        $amount = floor(str_word_count(strip_tags($this->getRawOriginal('content') . json_encode($this->contentBlocks))) / 200);
+        return $amount > 0 ? $amount : 1;
     }
 
     public static function resolveRoute($parameters = [])

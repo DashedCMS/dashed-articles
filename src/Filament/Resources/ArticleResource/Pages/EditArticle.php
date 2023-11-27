@@ -82,11 +82,11 @@ class EditArticle extends EditRecord
         return $data;
     }
 
-//    protected function mutateFormDataBeforeFill(array $data): array
-//    {
-////        ray($this->record->customBlocks->getTranslation('blocks', $this->activeLocale));
-////        $data['customBlocks'] = $this->record->customBlocks->getTranslation('blocks', $this->activeLocale) ?? [];
-////
-////        return $data;
-//    }
+    //    protected function mutateFormDataBeforeFill(array $data): array
+    //    {
+    ////        ray($this->record->customBlocks->getTranslation('blocks', $this->activeLocale));
+    ////        $data['customBlocks'] = $this->record->customBlocks->getTranslation('blocks', $this->activeLocale) ?? [];
+    ////
+    ////        return $data;
+    //    }
 }
