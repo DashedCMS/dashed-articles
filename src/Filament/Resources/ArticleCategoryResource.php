@@ -33,7 +33,7 @@ class ArticleCategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $icon = 'heroicon-squares-2x2';
+    protected static ?string $navigationIcon = 'heroicon-squares-2x2';
     protected static ?string $navigationGroup = 'Artikelen';
     protected static ?string $navigationLabel = 'Categorieën';
     protected static ?string $label = 'Categorie';
