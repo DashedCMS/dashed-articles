@@ -35,7 +35,7 @@ class EditArticleCategory extends EditRecord
     protected function beforeSave(): void
     {
         if ($this->record->slug) {
-            Redirect::handleSlugChange($this->record->slug, $this->data[$this->activeLocale]['slug']);
+            Redirect::handleSlugChange($this->record->slug, $this->data['slug']);
         }
     }
 
