@@ -57,7 +57,7 @@ class ArticleCategoryResource extends Resource
                             ->label('Name')
                             ->required()
                             ->maxLength(255)
-                            ->reactive()
+                            ->lazy()
                             ->afterStateUpdated(function (Set $set, $state, $livewire) {
                                 if ($livewire instanceof CreateArticleCategory) {
                                     $set('slug', Str::slug($state));
