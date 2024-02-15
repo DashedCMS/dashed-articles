@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -28,6 +29,7 @@ class ArticleCategoryResource extends Resource
 {
     use Translatable;
     use HasVisitableTab;
+    use HasCustomBlocksTab;
 
     protected static ?string $model = ArticleCategory::class;
 
@@ -52,7 +54,7 @@ class ArticleCategoryResource extends Resource
         return $form
             ->schema([
                 Section::make('Content')
-                    ->schema([
+                    ->schema(array_merge([
                         TextInput::make('name')
                             ->label('Name')
                             ->required()
@@ -73,7 +75,7 @@ class ArticleCategoryResource extends Resource
                             ->blocks(cms()->builder('blocks'))
                             ->blockLabels()
                             ->columnSpanFull(),
-                    ])
+                    ], static::customBlocksTab(cms()->builder('articleCategoryBlocks'))))
                     ->columns(2),
                 Section::make('Globale informatie')
                     ->schema(static::publishTab())

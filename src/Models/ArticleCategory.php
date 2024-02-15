@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Models;
 
+use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\App;
@@ -17,6 +18,7 @@ class ArticleCategory extends Model
 {
     use HasTranslations;
     use IsVisitable;
+    use HasCustomBlocks;
 
     protected $table = 'dashed__article_categories';
 
