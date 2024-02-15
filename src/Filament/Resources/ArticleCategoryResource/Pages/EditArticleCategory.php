@@ -2,6 +2,8 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages;
 
+use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedCore\Classes\Locales;
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -28,8 +30,38 @@ class EditArticleCategory extends EditRecord
                 ->label('Bekijk artikel categorie')
                 ->url($this->record->getUrl())
                 ->openUrlInNewTab(),
+            Action::make('Dupliceer')
+                ->action('duplicate')
+                ->color('warning'),
             DeleteAction::make(),
         ];
+    }
+
+    public function duplicate()
+    {
+        $new = $this->record->replicate();
+        foreach (Locales::getLocales() as $locale) {
+            $new->setTranslation('slug', $locale['id'], $new->getTranslation('slug', $locale['id']));
+            while (ArticleCategory::where('slug->' . $locale['id'], $new->getTranslation('slug', $locale['id']))->count()) {
+                $new->setTranslation('slug', $locale['id'], $new->getTranslation('slug', $locale['id']) . Str::random(1));
+            }
+        }
+
+        $new->save();
+
+        if ($this->record->customBlocks) {
+            $newCustomBlock = $this->record->customBlocks->replicate();
+            $newCustomBlock->blockable_id = $new->id;
+            $newCustomBlock->save();
+        }
+
+        if ($this->record->metaData) {
+            $newMetaData = $this->record->metaData->replicate();
+            $newMetaData->metadatable_id = $new->id;
+            $newMetaData->save();
+        }
+
+        return redirect(route('filament.dashed.resources.article-categories.edit', [$new]));
     }
 
     protected function beforeSave(): void
