@@ -5,6 +5,7 @@ namespace Dashed\DashedArticles\Models;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\App;
 use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\View;
@@ -44,6 +45,11 @@ class ArticleCategory extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class);
+    }
+
+    public function childs(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id', 'id');
     }
 
     public static function resolveRoute($parameters = [])
