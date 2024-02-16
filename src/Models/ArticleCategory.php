@@ -71,7 +71,6 @@ class ArticleCategory extends Model
                 }
             }
 
-            dd($articleCategory);
             if (View::exists('dashed.article-categories.show')) {
                 seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
                 seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
