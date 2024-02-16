@@ -62,7 +62,7 @@ class ArticleCategory extends Model
         if ($overviewPage) {
             $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), str($slugComponents[0])->replace('/', ''))->where('id', $overviewPage->id)->first();
             if (!$page) {
-                return 'pageNotFound';
+                return;
             }
             unset($slugComponents[0]);
         }
@@ -73,7 +73,7 @@ class ArticleCategory extends Model
                 $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
                 $parentId = $articleCategory?->id;
                 if (!$articleCategory) {
-                    return 'pageNotFound';
+                    return;
                 }
             }
 
@@ -104,6 +104,8 @@ class ArticleCategory extends Model
                 View::share('page', $page ?? null);
 
                 return view('dashed.article-categories.show');
+            }else{
+                return 'pageNotFound';
             }
         }
     }
