@@ -130,4 +130,54 @@ class Article extends Model
             }
         }
     }
+
+    public function breadcrumbs(): array
+    {
+        $breadcrumbs = [];
+        $model = $this;
+
+        $homePage = Page::isHome()->publicShowable()->first();
+        if ($homePage) {
+            $breadcrumbs[] = [
+                'name' => $homePage->name,
+                'url' => $homePage->getUrl(),
+            ];
+        }
+
+        $overviewPage = self::getOverviewPage();
+        if ($overviewPage) {
+            $breadcrumbs[] = [
+                'name' => $overviewPage->name,
+                'url' => $overviewPage->getUrl(),
+            ];
+        }
+
+        if ($this->category) {
+            $categoryBreadcrumbs = [];
+            $category = $this->category;
+            $categoryBreadcrumbs[] = [
+                'name' => $category->name,
+                'url' => $category->getUrl(),
+            ];
+            while ($category->parent) {
+                $category = $category->parent;
+                $categoryBreadcrumbs[] = [
+                    'name' => $category->name,
+                    'url' => $category->getUrl(),
+                ];
+            }
+            if(count($categoryBreadcrumbs)){
+                $categoryBreadcrumbs = array_reverse($categoryBreadcrumbs);
+                $breadcrumbs = array_merge($breadcrumbs, $categoryBreadcrumbs);
+            }
+
+        }
+
+        $breadcrumbs[] = [
+            'name' => $this->name,
+            'url' => $this->getUrl(),
+        ];
+
+        return $breadcrumbs;
+    }
 }
