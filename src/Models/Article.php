@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\SchemaOrg\Schema;
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Support\Facades\App;
