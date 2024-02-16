@@ -21,7 +21,7 @@ class LikeArticle extends Component
 
     public function markAs(bool $status): void
     {
-        if (ArticleLike::where('article_id', $this->article->id)->where('useful', $status)->exists()) {
+        if (ArticleLike::where('article_id', $this->article->id)->where('like', $status)->exists()) {
             ArticleLike::remove($this->article->id);
         } else {
             ArticleLike::markAs($status, $this->article->id);
