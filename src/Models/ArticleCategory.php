@@ -123,6 +123,19 @@ class ArticleCategory extends Model
         return $articleIds;
     }
 
+    public function allChildIds(): array
+    {
+        $articleCategoryIds = [];
+
+        foreach ($this->childs as $child) {
+            $articleCategoryIds = array_merge($articleCategoryIds, $child->allChildIds());
+        }
+
+        $articleCategoryIds = array_merge($articleCategoryIds, $this->childs()->pluck('id')->toArray());
+
+        return $articleCategoryIds;
+    }
+
     public function totalArticlesCount(): int
     {
         $amount = 0;
