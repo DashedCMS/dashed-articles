@@ -29,6 +29,7 @@ class ArticlesSettingsPage extends Page implements HasForms
         $sites = Sites::getSites();
         foreach ($sites as $site) {
             $formData["article_overview_page_id_{$site['id']}"] = Customsetting::get('article_overview_page_id', $site['id']);
+            $formData["articlecategory_overview_page_id_{$site['id']}"] = Customsetting::get('articlecategory_overview_page_id', $site['id']);
         }
 
         $this->form->fill($formData);
@@ -44,7 +45,10 @@ class ArticlesSettingsPage extends Page implements HasForms
             $schema = [
                 Select::make("article_overview_page_id_{$site['id']}")
                     ->label('Artikel overview pagina')
-                ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
+                    ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
+                Select::make("articlecategory_overview_page_id_{$site['id']}")
+                    ->label('Artikel category overview pagina')
+                    ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
             ];
 
             $tabs[] = Tab::make($site['id'])
@@ -72,6 +76,7 @@ class ArticlesSettingsPage extends Page implements HasForms
 
         foreach ($sites as $site) {
             Customsetting::set('article_overview_page_id', $this->form->getState()["article_overview_page_id_{$site['id']}"], $site['id']);
+            Customsetting::set('articlecategory_overview_page_id', $this->form->getState()["articlecategory_overview_page_id_{$site['id']}"], $site['id']);
         }
 
         Notification::make()
