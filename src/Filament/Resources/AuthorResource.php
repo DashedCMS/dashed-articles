@@ -54,7 +54,7 @@ class AuthorResource extends Resource
                             ->label('Name')
                             ->required()
                             ->maxLength(255)
-                            ->reactive()
+                            ->lazy()
                             ->afterStateUpdated(function (Set $set, $state, $livewire) {
                                 if ($livewire instanceof CreateAuthor) {
                                     $set('slug', Str::slug($state));
