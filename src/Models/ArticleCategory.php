@@ -104,9 +104,22 @@ class ArticleCategory extends Model
                 View::share('page', $page ?? null);
 
                 return view('dashed.article-categories.show');
-            }else{
+            } else {
                 return 'pageNotFound';
             }
         }
+    }
+
+    public function totalArticlesCount(): int
+    {
+        $amount = 0;
+
+        foreach ($this->childs as $child) {
+            $amount += $child->totalArticlesCount();
+        }
+
+        $amount += $this->articles()->count();
+
+        return $amount;
     }
 }
