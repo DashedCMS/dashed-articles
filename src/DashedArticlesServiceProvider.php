@@ -2,6 +2,9 @@
 
 namespace Dashed\DashedArticles;
 
+use Dashed\DashedArticles\Livewire\LikeArticle;
+use Dashed\DashedEcommerceCore\Livewire\Frontend\Cart\Cart;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedArticles\Models\Article;
 use Dashed\DashedArticles\Models\ArticleCategory;
@@ -15,6 +18,9 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        //Frontend components
+        Livewire::component('articles.like-article', LikeArticle::class);
 
         cms()->builder(
             'routeModels',

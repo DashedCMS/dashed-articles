@@ -180,4 +180,16 @@ class Article extends Model
 
         return $breadcrumbs;
     }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(ArticleLike::class)
+            ->where('like', 1);
+    }
+
+    public function dislikes(): HasMany
+    {
+        return $this->hasMany(ArticleLike::class)
+            ->where('like', 0);
+    }
 }
