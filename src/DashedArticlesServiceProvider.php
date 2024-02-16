@@ -15,12 +15,15 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'dashed-articles';
 
+    public function bootingPackage()
+    {
+        //Frontend components
+        Livewire::component('articles.like-article', LikeArticle::class);
+    }
+
     public function configurePackage(Package $package): void
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-
-        //Frontend components
-        Livewire::component('articles.like-article', LikeArticle::class);
 
         cms()->builder(
             'routeModels',
