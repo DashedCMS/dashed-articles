@@ -68,44 +68,85 @@ class ArticleCategory extends Model
         }
 
         if ($slug) {
-            $parentId = null;
-            foreach ($slugComponents as $slugPart) {
-                $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
-                $parentId = $articleCategory?->id;
-                if (!$articleCategory) {
-                    return;
-                }
-            }
-
-            if (View::exists('dashed.article-categories.show')) {
-                seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
-                seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
-                seo()->metaData('ogType', 'article');
-                if ($articleCategory->metadata && $articleCategory->metadata->image) {
-                    seo()->metaData('metaImage', $articleCategory->metadata->image);
-                }
-
-                $correctLocale = App::getLocale();
-                $alternateUrls = [];
-                foreach (Sites::getLocales() as $locale) {
-                    if ($locale['id'] != $correctLocale) {
-                        LaravelLocalization::setLocale($locale['id']);
-                        App::setLocale($locale['id']);
-                        $alternateUrls[$locale['id']] = $articleCategory->getUrl();
+            if(!$slugComponents){
+                $parentId = null;
+                foreach ($slugComponents as $slugPart) {
+                    $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
+                    $parentId = $articleCategory?->id;
+                    if (!$articleCategory) {
+                        return;
                     }
                 }
-                LaravelLocalization::setLocale($correctLocale);
-                App::setLocale($correctLocale);
-                seo()->metaData('alternateUrls', $alternateUrls);
 
-                View::share('articleCategory', $articleCategory);
-                View::share('breadcrumbs', $articleCategory->breadcrumbs());
-                View::share('articles', $articleCategory->articles()->paginate(12));
-                View::share('page', $page ?? null);
+                if (View::exists('dashed.article-categories.show-overview')) {
+                    seo()->metaData('metaTitle', $page->metadata && $page->metadata->title ? $page->metadata->title : $page->name);
+                    seo()->metaData('metaDescription', $page->metadata->description ?? '');
+                    seo()->metaData('ogType', 'article');
+                    if ($page->metadata && $page->metadata->image) {
+                        seo()->metaData('metaImage', $page->metadata->image);
+                    }
 
-                return view('dashed.article-categories.show');
-            } else {
-                return 'pageNotFound';
+                    $correctLocale = App::getLocale();
+                    $alternateUrls = [];
+                    foreach (Sites::getLocales() as $locale) {
+                        if ($locale['id'] != $correctLocale) {
+                            LaravelLocalization::setLocale($locale['id']);
+                            App::setLocale($locale['id']);
+                            $alternateUrls[$locale['id']] = $page->getUrl();
+                        }
+                    }
+                    LaravelLocalization::setLocale($correctLocale);
+                    App::setLocale($correctLocale);
+                    seo()->metaData('alternateUrls', $alternateUrls);
+
+                    View::share('breadcrumbs', $page->breadcrumbs());
+                    View::share('categories', ArticleCategory::publicShowable()->paginate(12));
+                    View::share('page', $page ?? null);
+
+                    return view('dashed.article-categories.show-overview');
+                } else {
+                    return 'pageNotFound';
+                }
+            }else{
+                $parentId = null;
+                foreach ($slugComponents as $slugPart) {
+                    $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
+                    $parentId = $articleCategory?->id;
+                    if (!$articleCategory) {
+                        return;
+                    }
+                }
+
+                if (View::exists('dashed.article-categories.show')) {
+                    seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
+                    seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
+                    seo()->metaData('ogType', 'article');
+                    if ($articleCategory->metadata && $articleCategory->metadata->image) {
+                        seo()->metaData('metaImage', $articleCategory->metadata->image);
+                    }
+
+                    $correctLocale = App::getLocale();
+                    $alternateUrls = [];
+                    foreach (Sites::getLocales() as $locale) {
+                        if ($locale['id'] != $correctLocale) {
+                            LaravelLocalization::setLocale($locale['id']);
+                            App::setLocale($locale['id']);
+                            $alternateUrls[$locale['id']] = $articleCategory->getUrl();
+                        }
+                    }
+                    LaravelLocalization::setLocale($correctLocale);
+                    App::setLocale($correctLocale);
+                    seo()->metaData('alternateUrls', $alternateUrls);
+
+                    View::share('articleCategory', $articleCategory);
+                    View::share('breadcrumbs', $articleCategory->breadcrumbs());
+                    View::share('articles', $articleCategory->articles()->paginate(12));
+                    View::share('page', $page ?? null);
+
+                    return view('dashed.article-categories.show');
+                } else {
+                    return 'pageNotFound';
+                }
             }
         }
     }
