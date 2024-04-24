@@ -64,13 +64,6 @@ class EditArticleCategory extends EditRecord
         return redirect(route('filament.dashed.resources.article-categories.edit', [$new]));
     }
 
-    protected function beforeSave(): void
-    {
-        if ($this->record->slug) {
-            Redirect::handleSlugChange($this->record->slug, $this->data['slug']);
-        }
-    }
-
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['slug'] = Str::slug($data['slug'] ?: $data['name']);
@@ -80,8 +73,6 @@ class EditArticleCategory extends EditRecord
         }
 
         $data['site_ids'] = $data['site_ids'] ?? [Sites::getFirstSite()['id']];
-
-        Redirect::handleSlugChange($this->record->getTranslation('slug', $this->activeLocale), $data['slug']);
 
         return $data;
     }

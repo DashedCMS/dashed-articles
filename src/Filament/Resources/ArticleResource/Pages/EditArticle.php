@@ -77,8 +77,6 @@ class EditArticle extends EditRecord
         //        $data['content'] = $this->record->content;
         //        $data['content'][$this->activeLocale] = $content;
 
-        Redirect::handleSlugChange($this->record->getTranslation('slug', $this->activeLocale), $data['slug']);
-
         return $data;
     }
 
