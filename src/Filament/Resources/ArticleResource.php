@@ -22,7 +22,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
 use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\ListArticles;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
 
