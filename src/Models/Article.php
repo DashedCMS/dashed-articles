@@ -77,8 +77,8 @@ class Article extends Model
 
         if ($slug && $overviewPage = self::getOverviewPage()) {
             $article = Article::publicShowable()->where('slug->' . App::getLocale(), $slugComponents[count($slugComponents) - 1])->first();
-            if ($article) {
-                $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), str_replace('/' . $slugComponents[count($slugComponents) - 1], '', $slug))->where('id', $overviewPage->id)->first();
+            if ($article && (!$article->category || (Customsetting::get('article_use_category_in_url') && $article->category && $article->category->slug == $slugComponents[count($slugComponents) - 2]))) {
+                $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
                 if ($page) {
                     if (View::exists('dashed.articles.show')) {
                         seo()->metaData('metaTitle', $article->metadata && $article->metadata->title ? $article->metadata->title : $article->name);
@@ -167,7 +167,7 @@ class Article extends Model
                     'url' => $category->getUrl(),
                 ];
             }
-            if(count($categoryBreadcrumbs)){
+            if (count($categoryBreadcrumbs)) {
                 $categoryBreadcrumbs = array_reverse($categoryBreadcrumbs);
                 $breadcrumbs = array_merge($breadcrumbs, $categoryBreadcrumbs);
             }
@@ -192,5 +192,28 @@ class Article extends Model
     {
         return $this->hasMany(ArticleLike::class)
             ->where('like', 0);
+    }
+
+    public function getUrl()
+    {
+        $url = '';
+
+        if ($overviewPage = self::getOverviewPage()) {
+            if (method_exists($this, 'parent') && $this->parent) {
+                $url .= "{$this->parent->getUrl()}/";
+            } else {
+                $url .= "{$overviewPage->getUrl()}/";
+            }
+
+            if (Customsetting::get('article_use_category_in_url') && $this->category) {
+                $url .=  "{$this->category->slug}/";
+            }
+        }else{
+            return '/';
+        }
+
+        $url .= $this->slug;
+
+        return LaravelLocalization::localizeUrl($url);
     }
 }
