@@ -189,4 +189,21 @@ class ArticleCategory extends Model
 
         return $amount;
     }
+
+    public function getUrl()
+    {
+        $url = '';
+
+        if ($overviewPage = self::getOverviewPage()) {
+            if (method_exists($this, 'parent') && $this->parent) {
+                $url .= "{$this->parent->getUrl()}/";
+            } else {
+                $url .= "{$overviewPage->getUrl()}/";
+            }
+        }
+
+        $url .= $this->slug;
+
+        return LaravelLocalization::localizeUrl($url);
+    }
 }
