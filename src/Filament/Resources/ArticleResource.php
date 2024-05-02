@@ -4,7 +4,11 @@ namespace Dashed\DashedArticles\Filament\Resources;
 
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use Filament\Tables\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
@@ -120,17 +124,19 @@ class ArticleResource extends Resource
                     ->label('Auteur')
                     ->multiple()
                     ->relationship('author', 'name'),
-
-
+            ])
+            ->filters([
+                TrashedFilter::make(),
             ])
             ->actions([
-                EditAction::make()
-                    ->button(),
+                EditAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -149,5 +155,13 @@ class ArticleResource extends Resource
             'create' => CreateArticle::route('/create'),
             'edit' => EditArticle::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }
