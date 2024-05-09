@@ -77,7 +77,7 @@ class Article extends Model
 
         if ($slug && $overviewPage = self::getOverviewPage()) {
             $article = Article::publicShowable()->where('slug->' . App::getLocale(), $slugComponents[count($slugComponents) - 1])->first();
-            if ($article && (!$article->category || (Customsetting::get('article_use_category_in_url') && $article->category && $article->category->slug == $slugComponents[count($slugComponents) - 2]))) {
+            if ($article && (!Customsetting::get('article_use_category_in_url', null, false) || (!$article->category || (Customsetting::get('article_use_category_in_url', null, false) && $article->category && $article->category->slug == $slugComponents[count($slugComponents) - 2])))) {
                 $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
                 if ($page) {
                     if (View::exists('dashed.articles.show')) {
