@@ -71,10 +71,7 @@ class ArticleCategoryResource extends Resource
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->required()
                             ->maxLength(255),
-                        Builder::make('content')
-                            ->blocks(cms()->builder('blocks'))
-                            ->blockLabels()
-                            ->columnSpanFull(),
+                        cms()->getFilamentBuilderBlock(),
                     ], static::customBlocksTab(cms()->builder('articleCategoryBlocks'))))
                     ->columns(2),
                 Section::make('Globale informatie')
