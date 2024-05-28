@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages;
 
+use Dashed\DashedCore\Filament\Concerns\HasCreatableCMSActions;
 use Illuminate\Support\Str;
 use Dashed\DashedCore\Classes\Sites;
 use Filament\Actions\LocaleSwitcher;
@@ -12,27 +13,12 @@ use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
 
 class CreateArticle extends CreateRecord
 {
-    use Translatable;
+    use HasCreatableCMSActions;
 
     protected static string $resource = ArticleResource::class;
 
     protected function getActions(): array
     {
-        return [
-          LocaleSwitcher::make(),
-        ];
-    }
-
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['slug'] = Str::slug($data['slug'] ?: $data['name']);
-
-        while (Article::where('slug->' . $this->activeLocale, $data['slug'])->count()) {
-            $data['slug'] .= Str::random(1);
-        }
-
-        $data['site_ids'] = $data['site_ids'] ?? [Sites::getFirstSite()['id']];
-
-        return $data;
+        return self::CMSActions();
     }
 }
