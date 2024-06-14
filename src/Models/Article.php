@@ -120,6 +120,7 @@ class Article extends Model
                         seo()->metaData('alternateUrls', $alternateUrls);
 
                         View::share('article', $article);
+                        View::share('model', $article);
                         View::share('breadcrumbs', $article->breadcrumbs());
                         View::share('page', $page);
 

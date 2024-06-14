@@ -21,6 +21,7 @@ use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\EditAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\ListAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
+use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
 
 class AuthorResource extends Resource
 {
@@ -62,14 +63,14 @@ class AuthorResource extends Resource
                             }),
                         TextInput::make('slug')
                             ->label('Slug')
-                            ->unique('dashed__article_authors', 'slug', fn ($record) => $record)
+                            ->unique('dashed__article_authors', 'slug', fn($record) => $record)
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->required()
                             ->maxLength(255),
-                        FileUpload::make('image')
-                            ->directory('dashed/article-authors/images')
+                        MediaPicker::make('image')
                             ->name('Afbeelding')
-                            ->image(),
+                            ->acceptedFileTypes(['image/*'])
+                            ->showFileName(),
                     ]))->columns(2),
             ]);
     }
