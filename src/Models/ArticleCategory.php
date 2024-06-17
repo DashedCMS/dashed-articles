@@ -78,7 +78,7 @@ class ArticleCategory extends Model
                     }
                 }
 
-                if (View::exists('dashed.article-categories.show-overview')) {
+                if (View::exists(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show-overview')) {
                     seo()->metaData('metaTitle', $page->metadata && $page->metadata->title ? $page->metadata->title : $page->name);
                     seo()->metaData('metaDescription', $page->metadata->description ?? '');
                     seo()->metaData('ogType', 'article');
@@ -103,7 +103,7 @@ class ArticleCategory extends Model
                     View::share('categories', ArticleCategory::publicShowable()->paginate(12));
                     View::share('page', $page ?? null);
 
-                    return view('dashed.article-categories.show-overview');
+                    return view(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show-overview');
                 } else {
                     return 'pageNotFound';
                 }
@@ -117,7 +117,7 @@ class ArticleCategory extends Model
                     }
                 }
 
-                if (View::exists('dashed.article-categories.show')) {
+                if (View::exists(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show')) {
                     seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
                     seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
                     seo()->metaData('ogType', 'article');
@@ -143,7 +143,7 @@ class ArticleCategory extends Model
                     View::share('articles', $articleCategory->articles()->paginate(12));
                     View::share('page', $page ?? null);
 
-                    return view('dashed.article-categories.show');
+                    return view(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show');
                 } else {
                     return 'pageNotFound';
                 }

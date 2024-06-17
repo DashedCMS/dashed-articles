@@ -80,7 +80,7 @@ class Article extends Model
             if ($article && (!Customsetting::get('article_use_category_in_url', null, false) || (!$article->category || (Customsetting::get('article_use_category_in_url', null, false) && $article->category && $article->category->slug == $slugComponents[count($slugComponents) - 2])))) {
                 $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
                 if ($page) {
-                    if (View::exists('dashed.articles.show')) {
+                    if (View::exists(Customsetting::get('site_theme', null, 'dashed') . '.articles.show')) {
                         seo()->metaData('metaTitle', $article->metadata && $article->metadata->title ? $article->metadata->title : $article->name);
                         seo()->metaData('metaDescription', $article->metadata->description ?? '');
                         seo()->metaData('ogType', 'article');
@@ -124,7 +124,7 @@ class Article extends Model
                         View::share('breadcrumbs', $article->breadcrumbs());
                         View::share('page', $page);
 
-                        return view('dashed.articles.show');
+                        return view(Customsetting::get('site_theme', null, 'dashed') . '.articles.show');
                     } else {
                         return 'pageNotFound';
                     }
