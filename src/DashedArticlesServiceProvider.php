@@ -3,6 +3,7 @@
 namespace Dashed\DashedArticles;
 
 use Dashed\DashedArticles\Livewire\LikeArticle;
+use Dashed\DashedArticles\Livewire\ShowArticles;
 use Dashed\DashedEcommerceCore\Livewire\Frontend\Cart\Cart;
 use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
@@ -19,6 +20,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
     {
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
+        Livewire::component('articles.show-articles', ShowArticles::class);
     }
 
     public function configurePackage(Package $package): void
