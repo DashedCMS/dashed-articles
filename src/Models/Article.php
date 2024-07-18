@@ -119,11 +119,15 @@ class Article extends Model
                         App::setLocale($correctLocale);
                         seo()->metaData('alternateUrls', $alternateUrls);
 
-                        View::share('article', $article);
-                        View::share('model', $article);
-                        View::share('breadcrumbs', $article->breadcrumbs());
-                        View::share('page', $page);
-
+                        return [
+                            'view' => Customsetting::get('site_theme', null, 'dashed') . '.articles.show',
+                            'parameters' => [
+                                'article' => $article,
+                                'model' => $article,
+                                'breadcrumbs' => $article->breadcrumbs(),
+                                'page' => $page,
+                            ],
+                        ];
                         return view(Customsetting::get('site_theme', null, 'dashed') . '.articles.show');
                     } else {
                         return 'pageNotFound';
@@ -207,9 +211,9 @@ class Article extends Model
             }
 
             if (Customsetting::get('article_use_category_in_url') && $this->category) {
-                $url .=  "{$this->category->slug}/";
+                $url .= "{$this->category->slug}/";
             }
-        }else{
+        } else {
             return '/';
         }
 
