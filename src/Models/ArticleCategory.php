@@ -68,7 +68,7 @@ class ArticleCategory extends Model
         }
 
         if ($slug) {
-            if (!$slugComponents) {
+            if(!$slugComponents){
                 $parentId = null;
                 foreach ($slugComponents as $slugPart) {
                     $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
@@ -99,19 +99,15 @@ class ArticleCategory extends Model
                     App::setLocale($correctLocale);
                     seo()->metaData('alternateUrls', $alternateUrls);
 
-                    return [
-                        'view' => Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show-overview',
-                        'parameters' => [
-                            'page' => $page,
-                            'breadcrumbs' => $page->breadcrumbs(),
-                            'categories' => ArticleCategory::publicShowable()->paginate(12),
-                        ]
-                    ];
+                    View::share('breadcrumbs', $page->breadcrumbs());
+                    View::share('categories', ArticleCategory::publicShowable()->paginate(12));
+                    View::share('page', $page ?? null);
+
                     return view(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show-overview');
                 } else {
                     return 'pageNotFound';
                 }
-            } else {
+            }else{
                 $parentId = null;
                 foreach ($slugComponents as $slugPart) {
                     $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
@@ -142,15 +138,10 @@ class ArticleCategory extends Model
                     App::setLocale($correctLocale);
                     seo()->metaData('alternateUrls', $alternateUrls);
 
-                    return [
-                        'view' => Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show',
-                        'parameters' => [
-                            'articleCategory' => $articleCategory,
-                            'breadcrumbs' => $articleCategory->breadcrumbs(),
-                            'articles' => $articleCategory->articles()->paginate(12),
-                            'page' => $page ?? null,
-                        ]
-                    ];
+                    View::share('articleCategory', $articleCategory);
+                    View::share('breadcrumbs', $articleCategory->breadcrumbs());
+                    View::share('articles', $articleCategory->articles()->paginate(12));
+                    View::share('page', $page ?? null);
 
                     return view(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show');
                 } else {
