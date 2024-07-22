@@ -122,6 +122,7 @@ class ArticleResource extends Resource
                     ->multiple()
                     ->relationship('author', 'name'),
             ])
+            ->reorderable('order')
             ->filters([
                 TrashedFilter::make(),
             ])
