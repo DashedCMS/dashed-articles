@@ -220,12 +220,14 @@ class Article extends Model
             return '/';
         }
 
-//        dump($url);
         $url .= $this->getTranslation('slug', $activeLocale);
 
-//        if ($activeLocale != Locales::getFirstLocale()['id']) {
-//            $url = '/' . $activeLocale . $url;
-//        }
+        if (!str($url)->startsWith('/')) {
+            $url = '/' . $url;
+        }
+        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->start("/{$activeLocale}")) {
+            $url = '/' . $activeLocale . $url;
+        }
 
         return $url;
     }
