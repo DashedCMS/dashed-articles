@@ -214,18 +214,19 @@ class Article extends Model
             }
 
             if (Customsetting::get('article_use_category_in_url') && $this->category) {
-                $url .=  "{$this->category->slug}/";
+                $url .=  "{$this->category->getTranslation('slug', $activeLocale)}/";
             }
         }else{
             return '/';
         }
 
-        $url .= $this->slug;
+//        dump($url);
+        $url .= $this->getTranslation('slug', $activeLocale);
 
-        if ($activeLocale != Locales::getFirstLocale()['id']) {
-            $url = $activeLocale . '/' . $url;
-        }
+//        if ($activeLocale != Locales::getFirstLocale()['id']) {
+//            $url = '/' . $activeLocale . $url;
+//        }
 
-        return url($url);
+        return $url;
     }
 }
