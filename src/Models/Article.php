@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Models;
 
+use Dashed\DashedCore\Classes\Locales;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\SchemaOrg\Schema;
 use Dashed\DashedPages\Models\Page;
@@ -195,15 +196,21 @@ class Article extends Model
             ->where('like', 0);
     }
 
-    public function getUrl()
+    public function getUrl($activeLocale = null)
     {
+        $originalLocale = app()->getLocale();
+
+        if (!$activeLocale) {
+            $activeLocale = $originalLocale;
+        }
+
         $url = '';
 
         if ($overviewPage = self::getOverviewPage()) {
             if (method_exists($this, 'parent') && $this->parent) {
-                $url .= "{$this->parent->getUrl()}/";
+                $url .= "{$this->parent->getUrl($activeLocale)}/";
             } else {
-                $url .= "{$overviewPage->getUrl()}/";
+                $url .= "{$overviewPage->getUrl($activeLocale)}/";
             }
 
             if (Customsetting::get('article_use_category_in_url') && $this->category) {
@@ -215,6 +222,10 @@ class Article extends Model
 
         $url .= $this->slug;
 
-        return LaravelLocalization::localizeUrl($url);
+        if ($activeLocale != Locales::getFirstLocale()['id']) {
+            $url = $activeLocale . '/' . $url;
+        }
+
+        return url($url);
     }
 }
