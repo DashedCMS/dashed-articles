@@ -196,7 +196,7 @@ class Article extends Model
             ->where('like', 0);
     }
 
-    public function getUrl($activeLocale = null)
+    public function getUrl($activeLocale = null, bool $native = true)
     {
         $originalLocale = app()->getLocale();
 
@@ -229,6 +229,6 @@ class Article extends Model
             $url = '/' . $activeLocale . $url;
         }
 
-        return $url;
+        return $native ? $url : url($url);
     }
 }
