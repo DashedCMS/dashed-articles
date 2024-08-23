@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Models;
 
+use Dashed\DashedCore\Classes\Locales;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -190,20 +191,33 @@ class ArticleCategory extends Model
         return $amount;
     }
 
-    public function getUrl()
+    public function getUrl($activeLocale = null, bool $native = true)
     {
+        $originalLocale = app()->getLocale();
+
+        if (!$activeLocale) {
+            $activeLocale = $originalLocale;
+        }
+
         $url = '';
 
         if ($overviewPage = self::getOverviewPage()) {
             if (method_exists($this, 'parent') && $this->parent) {
-                $url .= "{$this->parent->getUrl()}/";
+                $url .= "{$this->parent->getUrl($activeLocale)}/";
             } else {
-                $url .= "{$overviewPage->getUrl()}/";
+                $url .= "{$overviewPage->getUrl($activeLocale)}/";
             }
         }
 
-        $url .= $this->slug;
+        $url .= $this->getTranslation('slug', $activeLocale);
 
-        return LaravelLocalization::localizeUrl($url);
+        if (!str($url)->startsWith('/')) {
+            $url = '/' . $url;
+        }
+        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
+            $url = '/' . $activeLocale . $url;
+        }
+
+        return $native ? $url : url($url);
     }
 }
