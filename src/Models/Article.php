@@ -94,14 +94,24 @@ class Article extends Model
                             ->url(request()->url())
                             ->image(seo()->metaData('metaImage'))
                             ->description($article->contentBlocks['excerpt'] ?? '')
-                            ->author($article->author ? $article->author->name : Customsetting::get('site_name'))
-                            ->publisher($article->author ? $article->author->name : Customsetting::get('site_name'))
+                            ->author($article->author ? $article->author->name : [
+                                '@type' => 'Organization',
+                                'name' => Customsetting::get('site_name'),
+                            ])
+                            ->publisher($article->author ? $article->author->name : [
+                                '@type' => 'Organization',
+                                'name' => Customsetting::get('site_name'),
+                            ])
                             ->dateCreated($article->created_at)
                             ->dateModified($article->updated_at)
                             ->datePublished($article->start_date ?: $article->created_at)
                             ->inLanguage(LaravelLocalization::getCurrentLocaleName())
-                            ->thumbnailUrl(seo()->metaData('metaImage'))
-                            ->timeRequired("PT{$article->readingTimeMinutes}M");
+                            ->thumbnailUrl(mediaHelper()->getSingleMedia(seo()->metaData('metaImage'))->url ?? '')
+                            ->timeRequired("PT{$article->readingTimeMinutes}M")
+                            ->wordCount(str_word_count($article->getPlainContent()))
+                            ->articleBody($article->getPlainContent())
+                            ->text($article->getPlainContent())
+                            ->about($article->category ? $article->category->name : '');
 
                         $schemas = seo()->metaData('schemas');
                         $schemas['article'] = $articleSchema;
@@ -214,9 +224,9 @@ class Article extends Model
             }
 
             if (Customsetting::get('article_use_category_in_url') && $this->category) {
-                $url .=  "{$this->category->getTranslation('slug', $activeLocale)}/";
+                $url .= "{$this->category->getTranslation('slug', $activeLocale)}/";
             }
-        }else{
+        } else {
             return '/';
         }
 
