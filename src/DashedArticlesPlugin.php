@@ -2,12 +2,12 @@
 
 namespace Dashed\DashedArticles;
 
-use Filament\Panel;
-use Filament\Contracts\Plugin;
-use Dashed\DashedArticles\Filament\Resources\AuthorResource;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource;
-use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource;
 use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
+use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource;
+use Filament\Contracts\Plugin;
+use Filament\Panel;
 
 class DashedArticlesPlugin implements Plugin
 {
@@ -29,8 +29,5 @@ class DashedArticlesPlugin implements Plugin
             ]);
     }
 
-    public function boot(Panel $panel): void
-    {
-
-    }
+    public function boot(Panel $panel): void {}
 }

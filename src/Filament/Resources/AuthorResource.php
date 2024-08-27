@@ -2,25 +2,24 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Section;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Dashed\DashedArticles\Models\Author;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\EditAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\ListAuthor;
-use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
+use Dashed\DashedArticles\Models\Author;
+use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
 
 class AuthorResource extends Resource
@@ -32,9 +31,13 @@ class AuthorResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
     protected static ?string $navigationGroup = 'Artikelen';
+
     protected static ?string $navigationLabel = 'Auteurs';
+
     protected static ?string $label = 'Auteur';
+
     protected static ?string $pluralLabel = 'Auteurs';
 
     public static function getGloballySearchableAttributes(): array
@@ -63,7 +66,7 @@ class AuthorResource extends Resource
                             }),
                         TextInput::make('slug')
                             ->label('Slug')
-                            ->unique('dashed__article_authors', 'slug', fn($record) => $record)
+                            ->unique('dashed__article_authors', 'slug', fn ($record) => $record)
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->required()
                             ->maxLength(255),

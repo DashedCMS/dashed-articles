@@ -3,24 +3,24 @@
 namespace Dashed\DashedArticles\Models;
 
 use Dashed\DashedCore\Classes\Locales;
+use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
+use Dashed\DashedCore\Models\Concerns\IsVisitable;
+use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedPages\Models\Page;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\App;
-use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\View;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Spatie\Translatable\HasTranslations;
 
 class ArticleCategory extends Model
 {
+    use HasCustomBlocks;
     use HasTranslations;
     use IsVisitable;
-    use HasCustomBlocks;
 
     protected $table = 'dashed__article_categories';
 
@@ -61,25 +61,25 @@ class ArticleCategory extends Model
         $slug = $parameters['slug'] ?? '';
         $overviewPage = self::getOverviewPage();
         if ($overviewPage) {
-            $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), str($slugComponents[0])->replace('/', ''))->where('id', $overviewPage->id)->first();
-            if (!$page) {
+            $page = Page::publicShowable()->isNotHome()->where('slug->'.App::getLocale(), str($slugComponents[0])->replace('/', ''))->where('id', $overviewPage->id)->first();
+            if (! $page) {
                 return;
             }
             unset($slugComponents[0]);
         }
 
         if ($slug) {
-            if(!$slugComponents){
+            if (! $slugComponents) {
                 $parentId = null;
                 foreach ($slugComponents as $slugPart) {
-                    $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
+                    $articleCategory = ArticleCategory::publicShowable()->where('slug->'.app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
                     $parentId = $articleCategory?->id;
-                    if (!$articleCategory) {
+                    if (! $articleCategory) {
                         return;
                     }
                 }
 
-                if (View::exists(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show-overview')) {
+                if (View::exists(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show-overview')) {
                     seo()->metaData('metaTitle', $page->metadata && $page->metadata->title ? $page->metadata->title : $page->name);
                     seo()->metaData('metaDescription', $page->metadata->description ?? '');
                     seo()->metaData('ogType', 'article');
@@ -104,21 +104,21 @@ class ArticleCategory extends Model
                     View::share('categories', ArticleCategory::publicShowable()->paginate(12));
                     View::share('page', $page ?? null);
 
-                    return view(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show-overview');
+                    return view(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show-overview');
                 } else {
                     return 'pageNotFound';
                 }
-            }else{
+            } else {
                 $parentId = null;
                 foreach ($slugComponents as $slugPart) {
-                    $articleCategory = ArticleCategory::publicShowable()->where('slug->' . app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
+                    $articleCategory = ArticleCategory::publicShowable()->where('slug->'.app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
                     $parentId = $articleCategory?->id;
-                    if (!$articleCategory) {
+                    if (! $articleCategory) {
                         return;
                     }
                 }
 
-                if (View::exists(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show')) {
+                if (View::exists(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show')) {
                     seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
                     seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
                     seo()->metaData('ogType', 'article');
@@ -144,7 +144,7 @@ class ArticleCategory extends Model
                     View::share('articles', $articleCategory->articles()->paginate(12));
                     View::share('page', $page ?? null);
 
-                    return view(Customsetting::get('site_theme', null, 'dashed') . '.article-categories.show');
+                    return view(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show');
                 } else {
                     return 'pageNotFound';
                 }
@@ -195,7 +195,7 @@ class ArticleCategory extends Model
     {
         $originalLocale = app()->getLocale();
 
-        if (!$activeLocale) {
+        if (! $activeLocale) {
             $activeLocale = $originalLocale;
         }
 
@@ -211,11 +211,11 @@ class ArticleCategory extends Model
 
         $url .= $this->getTranslation('slug', $activeLocale);
 
-        if (!str($url)->startsWith('/')) {
-            $url = '/' . $url;
+        if (! str($url)->startsWith('/')) {
+            $url = '/'.$url;
         }
-        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
-            $url = '/' . $activeLocale . $url;
+        if ($activeLocale != Locales::getFirstLocale()['id'] && ! str($url)->startsWith("/{$activeLocale}")) {
+            $url = '/'.$activeLocale.$url;
         }
 
         return $native ? $url : url($url);

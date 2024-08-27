@@ -9,8 +9,11 @@ use Livewire\Component;
 class LikeArticle extends Component
 {
     public Article $article;
+
     public int $like = 2;
+
     public int $totalLikes = 0;
+
     public int $totalDislikes = 0;
 
     public function mount(Article $article)

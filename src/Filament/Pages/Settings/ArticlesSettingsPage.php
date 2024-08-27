@@ -2,26 +2,28 @@
 
 namespace Dashed\DashedArticles\Filament\Pages\Settings;
 
-use Filament\Forms\Components\Toggle;
-use Filament\Pages\Page;
-use Filament\Forms\Components\Tabs;
 use Dashed\DashedCore\Classes\Sites;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Notifications\Notification;
 use Dashed\DashedCore\Models\Customsetting;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Dashed\DashedPages\Models\Page as PageModel;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
 
 class ArticlesSettingsPage extends Page implements HasForms
 {
     use InteractsWithForms;
 
     protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $title = 'Artikelen';
 
     protected static string $view = 'dashed-core::settings.pages.default-settings';
+
     public array $data = [];
 
     public function mount(): void

@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -32,7 +33,7 @@ return new class extends Migration {
             $media = \Illuminate\Support\Facades\DB::table('media')
                 ->where('model_type', 'Dashed\Dashed\Models\Article')
                 ->where('model_id', $article->id)
-                ->where('collection_name', 'meta-image-' . $locale['id'])
+                ->where('collection_name', 'meta-image-'.$locale['id'])
                 ->first();
 
             if ($media) {

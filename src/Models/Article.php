@@ -3,25 +3,25 @@
 namespace Dashed\DashedArticles\Models;
 
 use Dashed\DashedCore\Classes\Locales;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\SchemaOrg\Schema;
-use Dashed\DashedPages\Models\Page;
-use Illuminate\Support\Facades\App;
 use Dashed\DashedCore\Classes\Sites;
-use Illuminate\Support\Facades\View;
-use Illuminate\Database\Eloquent\Model;
-use Dashed\DashedCore\Models\Customsetting;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Dashed\DashedCore\Models\Concerns\IsVisitable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
+use Dashed\DashedCore\Models\Concerns\IsVisitable;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedPages\Models\Page;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Spatie\SchemaOrg\Schema;
 
 class Article extends Model
 {
-    use SoftDeletes;
-    use IsVisitable;
     use HasCustomBlocks;
+    use IsVisitable;
+    use SoftDeletes;
 
     protected $table = 'dashed__articles';
 
@@ -67,7 +67,8 @@ class Article extends Model
 
     public function getReadingTimeMinutesAttribute()
     {
-        $amount = floor(str_word_count(strip_tags($this->getRawOriginal('content') . json_encode($this->contentBlocks))) / 200);
+        $amount = floor(str_word_count(strip_tags($this->getRawOriginal('content').json_encode($this->contentBlocks))) / 200);
+
         return $amount > 0 ? $amount : 1;
     }
 
@@ -77,11 +78,11 @@ class Article extends Model
         $slugComponents = explode('/', $slug);
 
         if ($slug && $overviewPage = self::getOverviewPage()) {
-            $article = Article::publicShowable()->where('slug->' . App::getLocale(), $slugComponents[count($slugComponents) - 1])->first();
-            if ($article && ((!Customsetting::get('article_use_category_in_url', null, false) && count($slugComponents) == 2) || ((!$article->category && count($slugComponents) == 2) || (Customsetting::get('article_use_category_in_url', null, false) && $article->category && $article->category->slug == $slugComponents[count($slugComponents) - 2] && count($slugComponents) == 3)))) {
-                $page = Page::publicShowable()->isNotHome()->where('slug->' . App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
+            $article = Article::publicShowable()->where('slug->'.App::getLocale(), $slugComponents[count($slugComponents) - 1])->first();
+            if ($article && ((! Customsetting::get('article_use_category_in_url', null, false) && count($slugComponents) == 2) || ((! $article->category && count($slugComponents) == 2) || (Customsetting::get('article_use_category_in_url', null, false) && $article->category && $article->category->slug == $slugComponents[count($slugComponents) - 2] && count($slugComponents) == 3)))) {
+                $page = Page::publicShowable()->isNotHome()->where('slug->'.App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
                 if ($page) {
-                    if (View::exists(Customsetting::get('site_theme', null, 'dashed') . '.articles.show')) {
+                    if (View::exists(Customsetting::get('site_theme', null, 'dashed').'.articles.show')) {
                         seo()->metaData('metaTitle', $article->metadata && $article->metadata->title ? $article->metadata->title : $article->name);
                         seo()->metaData('metaDescription', $article->metadata->description ?? '');
                         seo()->metaData('ogType', 'article');
@@ -135,7 +136,7 @@ class Article extends Model
                         View::share('breadcrumbs', $article->breadcrumbs());
                         View::share('page', $page);
 
-                        return view(Customsetting::get('site_theme', null, 'dashed') . '.articles.show');
+                        return view(Customsetting::get('site_theme', null, 'dashed').'.articles.show');
                     } else {
                         return 'pageNotFound';
                     }
@@ -210,7 +211,7 @@ class Article extends Model
     {
         $originalLocale = app()->getLocale();
 
-        if (!$activeLocale) {
+        if (! $activeLocale) {
             $activeLocale = $originalLocale;
         }
 
@@ -232,11 +233,11 @@ class Article extends Model
 
         $url .= $this->getTranslation('slug', $activeLocale);
 
-        if (!str($url)->startsWith('/')) {
-            $url = '/' . $url;
+        if (! str($url)->startsWith('/')) {
+            $url = '/'.$url;
         }
-        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
-            $url = '/' . $activeLocale . $url;
+        if ($activeLocale != Locales::getFirstLocale()['id'] && ! str($url)->startsWith("/{$activeLocale}")) {
+            $url = '/'.$activeLocale.$url;
         }
 
         return $native ? $url : url($url);

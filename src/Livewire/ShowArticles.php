@@ -3,9 +3,6 @@
 namespace Dashed\DashedArticles\Livewire;
 
 use Dashed\DashedArticles\Models\Article;
-use Dashed\DashedArticles\Models\ArticleLike;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,8 +11,11 @@ class ShowArticles extends Component
     use WithPagination;
 
     public int $pagination = 12;
+
     public ?int $category = null;
+
     public ?string $search = null;
+
     public string $sort = 'latest';
 
     public function mount(int $pagination = 12, ?int $category = null, ?string $search = null, string $sort = 'latest')
@@ -52,7 +52,7 @@ class ShowArticles extends Component
                 ->when($sort === 'popular', function ($query) {
                     return $query->withCount('likes')->orderBy('likes_count', 'desc');
                 })
-                ->paginate($pagination)
+                ->paginate($pagination),
         ]);
     }
 }

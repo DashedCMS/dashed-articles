@@ -2,48 +2,51 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Filament\Forms\Set;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\ListArticles;
+use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
+use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Section;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Dashed\DashedArticles\Models\Article;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
-use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
-use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\ListArticles;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
 
 class ArticleResource extends Resource
 {
-    use Translatable;
-    use HasVisitableTab;
     use HasCustomBlocksTab;
+    use HasVisitableTab;
+    use Translatable;
 
     protected static ?string $model = Article::class;
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
+
     protected static ?string $navigationGroup = 'Artikelen';
+
     protected static ?string $navigationLabel = 'Artikelen';
+
     protected static ?string $label = 'Artikel';
+
     protected static ?string $pluralLabel = 'Artikelen';
 
     public static function getGloballySearchableAttributes(): array

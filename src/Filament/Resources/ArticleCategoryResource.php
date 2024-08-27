@@ -2,43 +2,46 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Section;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\CreateArticleCategory;
+use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\EditArticleCategory;
+use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\ListArticleCategories;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
 use Dashed\DashedArticles\Models\ArticleCategory;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
-use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\EditArticleCategory;
-use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\CreateArticleCategory;
-use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\ListArticleCategories;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class ArticleCategoryResource extends Resource
 {
-    use Translatable;
-    use HasVisitableTab;
     use HasCustomBlocksTab;
+    use HasVisitableTab;
+    use Translatable;
 
     protected static ?string $model = ArticleCategory::class;
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
+
     protected static ?string $navigationGroup = 'Artikelen';
+
     protected static ?string $navigationLabel = 'Categorieën';
+
     protected static ?string $label = 'Categorie';
+
     protected static ?string $pluralLabel = 'Categorieën';
 
     public static function getGloballySearchableAttributes(): array
