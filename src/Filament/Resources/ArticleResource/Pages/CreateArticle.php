@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages;
 
+use Filament\Resources\Pages\CreateRecord;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource;
 use Dashed\DashedCore\Filament\Concerns\HasCreatableCMSActions;
-use Filament\Resources\Pages\CreateRecord;
 
 class CreateArticle extends CreateRecord
 {

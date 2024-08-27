@@ -2,12 +2,12 @@
 
 namespace Dashed\DashedArticles\Models;
 
-use Dashed\DashedCore\Models\Concerns\HasSearchScope;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Dashed\DashedCore\Models\Concerns\HasSearchScope;
 
 class Author extends Model
 {

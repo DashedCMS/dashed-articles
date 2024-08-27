@@ -2,19 +2,19 @@
 
 namespace Dashed\DashedArticles\Models;
 
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedCore\Classes\Sites;
-use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
-use Dashed\DashedCore\Models\Concerns\IsVisitable;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedPages\Models\Page;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\App;
+use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\View;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Dashed\DashedCore\Classes\Locales;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedCore\Models\Concerns\IsVisitable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class ArticleCategory extends Model
 {

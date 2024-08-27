@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedArticles\Livewire;
 
-use Dashed\DashedArticles\Models\Article;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Dashed\DashedArticles\Models\Article;
 
 class ShowArticles extends Component
 {

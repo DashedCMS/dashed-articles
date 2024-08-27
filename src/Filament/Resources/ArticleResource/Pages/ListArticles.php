@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages;
 
-use Dashed\DashedArticles\Filament\Resources\ArticleResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\LocaleSwitcher;
 use Filament\Resources\Pages\ListRecords;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource;
 use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
 
 class ListArticles extends ListRecords

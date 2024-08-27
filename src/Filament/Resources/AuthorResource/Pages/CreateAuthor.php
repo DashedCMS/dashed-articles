@@ -2,11 +2,11 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages;
 
-use Dashed\DashedArticles\Filament\Resources\AuthorResource;
+use Illuminate\Support\Str;
 use Dashed\DashedArticles\Models\Article;
 use Filament\Resources\Pages\CreateRecord;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource;
 use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
-use Illuminate\Support\Str;
 
 class CreateAuthor extends CreateRecord
 {

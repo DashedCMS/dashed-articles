@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages;
 
+use Filament\Resources\Pages\EditRecord;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource;
 use Dashed\DashedCore\Filament\Concerns\HasEditableCMSActions;
-use Filament\Resources\Pages\EditRecord;
 
 class EditArticle extends EditRecord
 {

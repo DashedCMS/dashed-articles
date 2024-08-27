@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedArticles\Tests;
 
-use Dashed\DashedArticles\DashedArticlesServiceProvider;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Dashed\DashedArticles\DashedArticlesServiceProvider;
 
 class TestCase extends Orchestra
 {

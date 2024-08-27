@@ -2,13 +2,13 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages;
 
-use Dashed\DashedArticles\Filament\Resources\AuthorResource;
-use Dashed\DashedArticles\Models\Author;
+use Illuminate\Support\Str;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\LocaleSwitcher;
+use Dashed\DashedArticles\Models\Author;
 use Filament\Resources\Pages\EditRecord;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource;
 use Filament\Resources\Pages\EditRecord\Concerns\Translatable;
-use Illuminate\Support\Str;
 
 class EditAuthor extends EditRecord
 {

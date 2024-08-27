@@ -2,14 +2,14 @@
 
 namespace Dashed\DashedArticles;
 
-use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
-use Dashed\DashedArticles\Livewire\LikeArticle;
-use Dashed\DashedArticles\Livewire\ShowArticles;
-use Dashed\DashedArticles\Models\Article;
-use Dashed\DashedArticles\Models\ArticleCategory;
 use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
+use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedArticles\Livewire\LikeArticle;
+use Dashed\DashedArticles\Livewire\ShowArticles;
+use Dashed\DashedArticles\Models\ArticleCategory;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
 
 class DashedArticlesServiceProvider extends PackageServiceProvider
 {

@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedArticles\Livewire;
 
+use Livewire\Component;
 use Dashed\DashedArticles\Models\Article;
 use Dashed\DashedArticles\Models\ArticleLike;
-use Livewire\Component;
 
 class LikeArticle extends Component
 {

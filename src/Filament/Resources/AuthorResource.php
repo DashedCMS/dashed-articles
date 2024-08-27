@@ -2,25 +2,25 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
-use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\EditAuthor;
-use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\ListAuthor;
-use Dashed\DashedArticles\Models\Author;
-use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Forms\Set;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Resources\Resource;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Dashed\DashedArticles\Models\Author;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\EditAuthor;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\ListAuthor;
+use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
 
 class AuthorResource extends Resource
 {
