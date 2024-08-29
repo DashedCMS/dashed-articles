@@ -102,6 +102,7 @@ class ArticleCategory extends Model
 
                     View::share('breadcrumbs', $page->breadcrumbs());
                     View::share('categories', ArticleCategory::publicShowable()->paginate(12));
+                    View::share('model', $page ?? null);
                     View::share('page', $page ?? null);
 
                     return view(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show-overview');
@@ -140,6 +141,7 @@ class ArticleCategory extends Model
                     seo()->metaData('alternateUrls', $alternateUrls);
 
                     View::share('articleCategory', $articleCategory);
+                    View::share('model', $articleCategory);
                     View::share('breadcrumbs', $articleCategory->breadcrumbs());
                     View::share('articles', $articleCategory->articles()->paginate(12));
                     View::share('page', $page ?? null);
