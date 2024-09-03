@@ -97,11 +97,11 @@ class Article extends Model
                             ->description($article->contentBlocks['excerpt'] ?? '')
                             ->author($article->author ? $article->author->name : [
                                 '@type' => 'Organization',
-                                'name' => Customsetting::get('site_name'),
+                                '@id' => request()->url() . '#organization',
                             ])
                             ->publisher($article->author ? $article->author->name : [
                                 '@type' => 'Organization',
-                                'name' => Customsetting::get('site_name'),
+                                '@id' => request()->url() . '#organization',
                             ])
                             ->dateCreated($article->created_at)
                             ->dateModified($article->updated_at)
