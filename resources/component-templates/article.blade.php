@@ -1,10 +1,8 @@
 <article
         class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-80 sm:pt-48 lg:pt-80 transform hover:scale-110 transition-all ease-in-out duration-300">
-    <x-drift::image
+    <x-dashed-files::image
             class="absolute inset-0 -z-10 h-full w-full object-cover"
-            config="dashed"
-            :path="$article->contentBlocks['main_image']"
-            :alt="$article->name"
+            :mediaId="$article->contentBlocks['main_image']"
             :manipulations="[
                 'widen' => 800,
             ]"
