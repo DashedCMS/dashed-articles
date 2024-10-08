@@ -26,7 +26,11 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dashed-articles');
+//        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dashed-articles');
+
+        $this->publishes([
+            __DIR__ . '/../resources/templates' => resource_path('views/' . env('SITE_THEME', 'dashed')),
+        ], 'dashed-articles-templates');
 
         //        $this->publishes([
         //            __DIR__ . '/../resources/views/frontend' => resource_path('views/vendor/dashed-articles/frontend'),
@@ -63,7 +67,6 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         );
 
         $package
-            ->name(self::$name)
-            ->hasViews();
+            ->name(self::$name);
     }
 }

@@ -79,7 +79,7 @@ class ArticleCategory extends Model
                     }
                 }
 
-                if (View::exists(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show-overview')) {
+                if (View::exists(env('SITE_THEME', 'dashed').'.article-categories.show-overview')) {
                     seo()->metaData('metaTitle', $page->metadata && $page->metadata->title ? $page->metadata->title : $page->name);
                     seo()->metaData('metaDescription', $page->metadata->description ?? '');
                     seo()->metaData('ogType', 'article');
@@ -105,7 +105,7 @@ class ArticleCategory extends Model
                     View::share('model', $page ?? null);
                     View::share('page', $page ?? null);
 
-                    return view(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show-overview');
+                    return view(env('SITE_THEME', 'dashed').'.article-categories.show-overview');
                 } else {
                     return 'pageNotFound';
                 }
@@ -119,7 +119,7 @@ class ArticleCategory extends Model
                     }
                 }
 
-                if (View::exists(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show')) {
+                if (View::exists(env('SITE_THEME', 'dashed').'.article-categories.show')) {
                     seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
                     seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
                     seo()->metaData('ogType', 'article');
@@ -146,7 +146,7 @@ class ArticleCategory extends Model
                     View::share('articles', $articleCategory->articles()->paginate(12));
                     View::share('page', $page ?? null);
 
-                    return view(Customsetting::get('site_theme', null, 'dashed').'.article-categories.show');
+                    return view(env('SITE_THEME', 'dashed').'.article-categories.show');
                 } else {
                     return 'pageNotFound';
                 }

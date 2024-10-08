@@ -82,7 +82,7 @@ class Article extends Model
             if ($article && ((! Customsetting::get('article_use_category_in_url', null, false) && count($slugComponents) == 2) || ((! $article->category && count($slugComponents) == 2) || (Customsetting::get('article_use_category_in_url', null, false) && $article->category && $article->category->slug == ($slugComponents[count($slugComponents) - 2] ?? '') && count($slugComponents) == 3)))) {
                 $page = Page::publicShowable()->isNotHome()->where('slug->'.App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
                 if ($page) {
-                    if (View::exists(Customsetting::get('site_theme', null, 'dashed').'.articles.show')) {
+                    if (View::exists(env('SITE_THEME', 'dashed').'.articles.show')) {
                         seo()->metaData('metaTitle', $article->metadata && $article->metadata->title ? $article->metadata->title : $article->name);
                         seo()->metaData('metaDescription', $article->metadata->description ?? '');
                         seo()->metaData('ogType', 'article');
@@ -136,7 +136,7 @@ class Article extends Model
                         View::share('breadcrumbs', $article->breadcrumbs());
                         View::share('page', $page);
 
-                        return view(Customsetting::get('site_theme', null, 'dashed').'.articles.show');
+                        return view(env('SITE_THEME', 'dashed').'.articles.show');
                     } else {
                         return 'pageNotFound';
                     }

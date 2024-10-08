@@ -38,7 +38,7 @@ class ShowArticles extends Component
         $sort = $this->sort;
         $pagination = $this->pagination;
 
-        return view('dashed-articles::frontend.show-articles', [
+        return view(env('SITE_THEME', 'dashed') . '.articles.show-articles', [
             'articles' => Article::query()
                 ->when($category, function ($query, $category) {
                     return $query->where('category_id', $category);

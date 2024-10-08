@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up()
     {
         foreach (\Dashed\DashedArticles\Models\Article::withTrashed()->get() as $article) {
-            $customBlock = new \Dashed\DashedCore\Models\CustomBlock;
+            $customBlock = new \Dashed\DashedCore\Models\CustomBlock();
             $customBlock->blocks = $article->blocks;
             $customBlock->blockable_type = \Dashed\DashedArticles\Models\Article::class;
             $customBlock->blockable_id = $article->id;

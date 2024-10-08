@@ -49,9 +49,13 @@ class ArticlesSettingsPage extends Page implements HasForms
             $schema = [
                 Select::make("article_overview_page_id_{$site['id']}")
                     ->label('Artikel overview pagina')
+                    ->searchable()
+                    ->preload()
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
                 Select::make("articlecategory_overview_page_id_{$site['id']}")
                     ->label('Artikel category overview pagina')
+                    ->searchable()
+                    ->preload()
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
                 Toggle::make("article_use_category_in_url_{$site['id']}")
                     ->label('Gebruik categorie in url'),
