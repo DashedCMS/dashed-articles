@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\View;
 use Dashed\DashedCore\Classes\Locales;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
