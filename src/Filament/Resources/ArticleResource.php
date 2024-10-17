@@ -49,6 +49,8 @@ class ArticleResource extends Resource
 
     protected static ?string $pluralLabel = 'Artikelen';
 
+    protected static ?int $navigationSort = 5;
+
     public static function getGloballySearchableAttributes(): array
     {
         return [

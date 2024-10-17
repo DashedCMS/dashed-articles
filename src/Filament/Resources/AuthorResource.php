@@ -40,6 +40,8 @@ class AuthorResource extends Resource
 
     protected static ?string $pluralLabel = 'Auteurs';
 
+    protected static ?int $navigationSort = 5;
+
     public static function getGloballySearchableAttributes(): array
     {
         return [
