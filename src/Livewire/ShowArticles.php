@@ -40,6 +40,7 @@ class ShowArticles extends Component
 
         return view(env('SITE_THEME', 'dashed') . '.articles.show-articles', [
             'articles' => Article::query()
+                ->publicShowable()
                 ->when($category, function ($query, $category) {
                     return $query->where('category_id', $category);
                 })
