@@ -15,7 +15,7 @@ use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Dashed\LaravelLocalization\Facades\LaravelLocalization;
 
 class Article extends Model
 {
