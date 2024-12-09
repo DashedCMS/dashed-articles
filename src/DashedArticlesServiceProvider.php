@@ -2,6 +2,13 @@
 
 namespace Dashed\DashedArticles;
 
+use App\Providers\AppServiceProvider;
+use Dashed\DashedEcommerceCore\Models\Product;
+use Dashed\DashedEcommerceCore\Models\ProductCategory;
+use Filament\Forms\Components\Builder\Block;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedArticles\Models\Article;
@@ -20,6 +27,32 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
+    }
+
+    public function packageBooted()
+    {
+        if (!cms()->isCMSRoute() || app()->runningInConsole()) {
+            return;
+        }
+
+        $defaultBlocks = [
+            Block::make('all-articles')
+                ->label('Alle artikelen')
+                ->schema([
+                ]),
+            Block::make('few-articles')
+                ->label('Paar artikelen')
+                ->schema([
+                    AppServiceProvider::getDefaultBlockFields(),
+                    TextInput::make('title')
+                        ->label('Titel'),
+                    TextInput::make('subtitle')
+                        ->label('Subtitel'),
+                ]),
+        ];
+
+        cms()
+            ->builder('blocks', $defaultBlocks);
     }
 
     public function configurePackage(Package $package): void

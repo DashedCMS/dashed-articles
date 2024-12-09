@@ -1,0 +1,1 @@
+<livewire:show-all-articles />
