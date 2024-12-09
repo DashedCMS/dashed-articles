@@ -23,14 +23,14 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
+
+        cms()->builder('builderBlockClasses', [
+            self::class => 'builderBlocks',
+        ]);
     }
 
-    public function packageBooted()
+    public static function builderBlocks()
     {
-        if (! cms()->isCMSRoute() || app()->runningInConsole()) {
-            return;
-        }
-
         $defaultBlocks = [
             Block::make('all-articles')
                 ->label('Alle artikelen')
