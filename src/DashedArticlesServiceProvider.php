@@ -57,7 +57,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public function configurePackage(Package $package): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         //        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dashed-articles');
 
@@ -72,7 +72,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
         cms()->builder(
             'routeModels',
-            array_merge(cms()->builder('routeModels'), [
+            [
                 'article' => [
                     'name' => 'Artikel',
                     'pluralName' => 'Artikelen',
@@ -85,19 +85,19 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                     'class' => ArticleCategory::class,
                     'nameField' => 'name',
                 ],
-            ])
+            ]
         );
 
         cms()->builder(
             'settingPages',
-            array_merge(cms()->builder('settingPages'), [
+            [
                 'articles' => [
                     'name' => 'Artikelen',
                     'description' => 'Instellingen voor artikelen',
                     'icon' => 'rss',
                     'page' => ArticlesSettingsPage::class,
                 ],
-            ])
+            ]
         );
 
         $package
