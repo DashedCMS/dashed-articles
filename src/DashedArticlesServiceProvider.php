@@ -2,16 +2,12 @@
 
 namespace Dashed\DashedArticles;
 
-use App\Providers\AppServiceProvider;
-use Dashed\DashedEcommerceCore\Models\Product;
-use Dashed\DashedEcommerceCore\Models\ProductCategory;
-use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Livewire\Livewire;
+use App\Providers\AppServiceProvider;
 use Spatie\LaravelPackageTools\Package;
+use Filament\Forms\Components\TextInput;
 use Dashed\DashedArticles\Models\Article;
+use Filament\Forms\Components\Builder\Block;
 use Dashed\DashedArticles\Livewire\LikeArticle;
 use Dashed\DashedArticles\Livewire\ShowArticles;
 use Dashed\DashedArticles\Models\ArticleCategory;
@@ -31,7 +27,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public function packageBooted()
     {
-        if (!cms()->isCMSRoute() || app()->runningInConsole()) {
+        if (! cms()->isCMSRoute() || app()->runningInConsole()) {
             return;
         }
 
