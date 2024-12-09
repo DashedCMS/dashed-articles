@@ -26,4 +26,6 @@
             <x-blocks :content="$article->content"></x-blocks>
         </x-container>
     </article>
+
+    <x-dashed-core::global-blocks name="article-page"/>
 </x-master>
