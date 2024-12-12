@@ -24,9 +24,12 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
 
-        cms()->builder('builderBlockClasses', [
-            self::class => 'builderBlocks',
-        ]);
+
+        if (config('dashed-articles.registerDefaultBuilderBlocks', true)) {
+            cms()->builder('builderBlockClasses', [
+                self::class => 'builderBlocks',
+            ]);
+        }
     }
 
     public static function builderBlocks()
@@ -97,6 +100,9 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         );
 
         $package
+            ->hasConfigFile([
+                'dashed-articles',
+            ])
             ->name(self::$name);
     }
 }
