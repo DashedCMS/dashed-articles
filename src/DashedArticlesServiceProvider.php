@@ -30,6 +30,10 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                 self::class => 'builderBlocks',
             ]);
         }
+
+        cms()->builder('publishOnUpdate', [
+            'dashed-articles-config',
+        ]);
     }
 
     public static function builderBlocks()
