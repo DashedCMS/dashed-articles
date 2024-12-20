@@ -77,7 +77,7 @@ class ArticleCategoryResource extends Resource
                             ->required()
                             ->maxLength(255),
                         cms()->getFilamentBuilderBlock(),
-                    ], static::customBlocksTab(cms()->builder('articleCategoryBlocks'))))
+                    ], static::customBlocksTab('articleCategoryBlocks')))
                     ->columns(2),
                 Section::make('Globale informatie')
                     ->schema(static::publishTab())

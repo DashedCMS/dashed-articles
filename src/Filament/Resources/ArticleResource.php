@@ -94,7 +94,7 @@ class ArticleResource extends Resource
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('category', 'name'),
                         cms()->getFilamentBuilderBlock(),
-                    ], static::customBlocksTab(cms()->builder('articleBlocks'))))
+                    ], static::customBlocksTab('articleBlocks')))
                     ->columns(2),
                 Section::make('Globale informatie')
                     ->schema(static::publishTab())
