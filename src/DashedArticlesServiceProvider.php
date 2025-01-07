@@ -24,7 +24,6 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
 
-
         if (config('dashed-articles.registerDefaultBuilderBlocks', true)) {
             cms()->builder('builderBlockClasses', [
                 self::class => 'builderBlocks',
@@ -33,6 +32,10 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
         cms()->builder('publishOnUpdate', [
             'dashed-articles-config',
+        ]);
+
+        cms()->builder('createDefaultPages', [
+            self::class => 'createDefaultPages',
         ]);
     }
 
@@ -108,5 +111,23 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                 'dashed-articles',
             ])
             ->name(self::$name);
+    }
+
+    public static function createDefaultPages(): void
+    {
+        if (!\Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
+            $page = new \Dashed\DashedPages\Models\Page();
+            $page->setTranslation('name', 'nl', 'Artikelen');
+            $page->setTranslation('slug', 'nl', 'articles');
+            $page->setTranslation('content', 'nl', [
+                [
+                    'data' => [],
+                    'type' => 'all-articles',
+                ]
+            ]);
+            $page->save();
+
+            \Dashed\DashedCore\Models\Customsetting::set('article_overview_page_id', $page->id);
+        }
     }
 }
