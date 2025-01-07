@@ -115,7 +115,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public static function createDefaultPages(): void
     {
-        if (!\Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
+        if (! \Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
             $page->setTranslation('name', 'nl', 'Artikelen');
             $page->setTranslation('slug', 'nl', 'articles');
@@ -123,7 +123,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                 [
                     'data' => [],
                     'type' => 'all-articles',
-                ]
+                ],
             ]);
             $page->save();
 
