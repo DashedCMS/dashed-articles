@@ -1,1 +1,1 @@
-<livewire:show-all-articles />
+<livewire:articles.show-articles />
