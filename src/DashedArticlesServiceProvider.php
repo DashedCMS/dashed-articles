@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedArticles;
 
-use Dashed\DashedCore\DashedCorePlugin;
 use Livewire\Livewire;
 use App\Providers\AppServiceProvider;
 use Spatie\LaravelPackageTools\Package;
