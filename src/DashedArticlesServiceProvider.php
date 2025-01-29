@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles;
 
+use Dashed\DashedCore\DashedCorePlugin;
 use Livewire\Livewire;
 use App\Providers\AppServiceProvider;
 use Spatie\LaravelPackageTools\Package;
@@ -36,6 +37,10 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
         cms()->builder('createDefaultPages', [
             self::class => 'createDefaultPages',
+        ]);
+
+        cms()->builder('plugins', [
+            new DashedArticlesPlugin(),
         ]);
     }
 
