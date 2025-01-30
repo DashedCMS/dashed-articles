@@ -67,7 +67,7 @@ class Article extends Model
 
     public function getReadingTimeMinutesAttribute()
     {
-        $amount = floor(str_word_count(strip_tags($this->getRawOriginal('content').json_encode($this->contentBlocks))) / 200);
+        $amount = floor(str_word_count(strip_tags($this->getRawOriginal('content') . json_encode($this->contentBlocks))) / 200);
 
         return $amount > 0 ? $amount : 1;
     }
@@ -75,74 +75,150 @@ class Article extends Model
     public static function resolveRoute($parameters = [])
     {
         $slug = $parameters['slug'] ?? '';
+        if (empty($slug)) {
+            return;
+        }
+
         $slugComponents = explode('/', $slug);
+        $lastSlugPart = $slugComponents[array_key_last($slugComponents)] ?? null;
+        $secondLastSlugPart = $slugComponents[count($slugComponents) - 2] ?? null;
 
-        if ($slug && $overviewPage = self::getOverviewPage()) {
-            $article = Article::publicShowable()->where('slug->'.App::getLocale(), $slugComponents[count($slugComponents) - 1])->first();
-            if ($article && ((! Customsetting::get('article_use_category_in_url', null, false) && count($slugComponents) == 2) || ((! $article->category && count($slugComponents) == 2) || (Customsetting::get('article_use_category_in_url', null, false) && $article->category && $article->category->slug == ($slugComponents[count($slugComponents) - 2] ?? '') && count($slugComponents) == 3)))) {
-                $page = Page::publicShowable()->isNotHome()->where('slug->'.App::getLocale(), $slugComponents[0])->where('id', $overviewPage->id)->first();
-                if ($page) {
-                    if (View::exists(env('SITE_THEME', 'dashed').'.articles.show')) {
-                        seo()->metaData('metaTitle', $article->metadata && $article->metadata->title ? $article->metadata->title : $article->name);
-                        seo()->metaData('metaDescription', $article->metadata->description ?? '');
-                        seo()->metaData('ogType', 'article');
-                        if ($article->metadata && $article->metadata->image) {
-                            seo()->metaData('metaImage', $article->metadata->image);
-                        }
+        $overviewPage = self::getOverviewPage();
+        $article = self::resolveArticle($lastSlugPart, $slugComponents);
 
-                        $articleSchema = Schema::article()
-                            ->name(seo()->metaData('metaTitle'))
-                            ->url(request()->url())
-                            ->image(seo()->metaData('metaImage'))
-                            ->description($article->contentBlocks['excerpt'] ?? '')
-                            ->author($article->author ? $article->author->name : [
-                                '@type' => 'Organization',
-                                '@id' => request()->url() . '#organization',
-                            ])
-                            ->publisher($article->author ? $article->author->name : [
-                                '@type' => 'Organization',
-                                '@id' => request()->url() . '#organization',
-                            ])
-                            ->dateCreated($article->created_at)
-                            ->dateModified($article->updated_at)
-                            ->datePublished($article->start_date ?: $article->created_at)
-                            ->inLanguage(LaravelLocalization::getCurrentLocaleName())
-                            ->thumbnailUrl(mediaHelper()->getSingleMedia(seo()->metaData('metaImage'))->url ?? '')
-                            ->timeRequired("PT{$article->readingTimeMinutes}M")
-                            ->wordCount(str_word_count($article->getPlainContent()))
-                            ->articleBody($article->getPlainContent())
-                            ->text($article->getPlainContent())
-                            ->about($article->category ? $article->category->name : '');
+        if (!$article) {
+            return;
+        }
 
-                        $schemas = seo()->metaData('schemas');
-                        $schemas['article'] = $articleSchema;
-                        seo()->metaData('schemas', $schemas);
+        if (!self::isValidSlugStructure($article, $overviewPage, $slugComponents, $secondLastSlugPart)) {
+            return;
+        }
 
-                        $correctLocale = App::getLocale();
-                        $alternateUrls = [];
-                        foreach (Sites::getLocales() as $locale) {
-                            if ($locale['id'] != $correctLocale) {
-                                LaravelLocalization::setLocale($locale['id']);
-                                App::setLocale($locale['id']);
-                                $alternateUrls[$locale['id']] = $article->getUrl();
-                            }
-                        }
-                        LaravelLocalization::setLocale($correctLocale);
-                        App::setLocale($correctLocale);
-                        seo()->metaData('alternateUrls', $alternateUrls);
+        if ($overviewPage) {
 
-                        View::share('article', $article);
-                        View::share('model', $article);
-                        View::share('breadcrumbs', $article->breadcrumbs());
-                        View::share('page', $page);
-
-                        return view(env('SITE_THEME', 'dashed').'.articles.show');
-                    } else {
-                        return 'pageNotFound';
-                    }
-                }
+            $page = self::getPageIfExists($overviewPage, $slugComponents[0]);
+            if (!$page) {
+                return;
             }
         }
+
+        return self::renderArticleView($article, $page ?? null);
+    }
+
+    private static function resolveArticle($slug, $slugComponents)
+    {
+        return Article::publicShowable()
+            ->where('slug->' . App::getLocale(), $slug)
+            ->first();
+    }
+
+    private static function isValidSlugStructure($article, $overviewPage, $slugComponents, $secondLastSlugPart)
+    {
+        $useCategoryInUrl = Customsetting::get('article_use_category_in_url', null, false);
+        $hasOverviewPage = $overviewPage && $overviewPage->id;
+
+        return (!$useCategoryInUrl && count($slugComponents) === ($overviewPage ? 2 : 1))
+            || (!$article->category && count($slugComponents) === ($overviewPage ? 2 : 1))
+            || ($useCategoryInUrl && $article->category && $article->category->slug === $secondLastSlugPart && count($slugComponents) === ($overviewPage ? 3 : 2));
+    }
+
+    private static function getPageIfExists($overviewPage, $firstSlugPart)
+    {
+        return Page::publicShowable()
+            ->isNotHome()
+            ->where('slug->' . App::getLocale(), $firstSlugPart)
+            ->where('id', $overviewPage->id)
+            ->first();
+    }
+
+    private static function renderArticleView($article, $page)
+    {
+        if (!View::exists(env('SITE_THEME', 'dashed') . '.articles.show')) {
+            return 'pageNotFound';
+        }
+
+        self::setSeoMetadata($article);
+        self::setAlternateUrls($article);
+
+        View::share('article', $article);
+        View::share('model', $article);
+        View::share('breadcrumbs', $article->breadcrumbs());
+        View::share('page', $page ?: $article);
+
+        return view(env('SITE_THEME', 'dashed') . '.articles.show');
+    }
+
+    private static function setSeoMetadata($article)
+    {
+        $defaultMetadata = [
+            'metaTitle' => $article->metadata->title ?? $article->name,
+            'metaDescription' => $article->metadata->description ?? '',
+            'ogType' => 'article',
+            'metaImage' => $article->metadata->image ?? null,
+        ];
+
+        foreach ($defaultMetadata as $key => $value) {
+            seo()->metaData($key, $value);
+        }
+
+        self::setArticleSchema($article);
+    }
+
+    private static function setArticleSchema($article)
+    {
+        $schema = Schema::article()
+            ->name(seo()->metaData('metaTitle'))
+            ->url(request()->url())
+            ->image(seo()->metaData('metaImage'))
+            ->description($article->contentBlocks['excerpt'] ?? '')
+            ->author(self::resolveAuthor($article))
+            ->publisher(self::resolvePublisher($article))
+            ->dateCreated($article->created_at)
+            ->dateModified($article->updated_at)
+            ->datePublished($article->start_date ?: $article->created_at)
+            ->inLanguage(LaravelLocalization::getCurrentLocaleName())
+            ->thumbnailUrl(mediaHelper()->getSingleMedia(seo()->metaData('metaImage'))->url ?? '')
+            ->timeRequired("PT{$article->readingTimeMinutes}M")
+            ->wordCount(str_word_count($article->getPlainContent()))
+            ->articleBody($article->getPlainContent())
+            ->text($article->getPlainContent())
+            ->about($article->category ? $article->category->name : '');
+
+        $schemas = seo()->metaData('schemas') ?? [];
+        $schemas['article'] = $schema;
+        seo()->metaData('schemas', $schemas);
+    }
+
+    private static function resolveAuthor($article)
+    {
+        return $article->author ? $article->author->name : [
+            '@type' => 'Organization',
+            '@id' => request()->url() . '#organization',
+        ];
+    }
+
+    private static function resolvePublisher($article)
+    {
+        return self::resolveAuthor($article);
+    }
+
+    private static function setAlternateUrls($article)
+    {
+        $currentLocale = App::getLocale();
+        $alternateUrls = [];
+
+        foreach (Sites::getLocales() as $locale) {
+            if ($locale['id'] !== $currentLocale) {
+                LaravelLocalization::setLocale($locale['id']);
+                App::setLocale($locale['id']);
+                $alternateUrls[$locale['id']] = $article->getUrl();
+            }
+        }
+
+        LaravelLocalization::setLocale($currentLocale);
+        App::setLocale($currentLocale);
+
+        seo()->metaData('alternateUrls', $alternateUrls);
     }
 
     public function breadcrumbs(): array
@@ -211,7 +287,7 @@ class Article extends Model
     {
         $originalLocale = app()->getLocale();
 
-        if (! $activeLocale) {
+        if (!$activeLocale) {
             $activeLocale = $originalLocale;
         }
 
@@ -223,21 +299,21 @@ class Article extends Model
             } else {
                 $url .= "{$overviewPage->getUrl($activeLocale)}/";
             }
-
-            if (Customsetting::get('article_use_category_in_url') && $this->category) {
-                $url .= "{$this->category->getTranslation('slug', $activeLocale)}/";
-            }
         } else {
-            return '/';
+            $url .= '/';
+        }
+
+        if (Customsetting::get('article_use_category_in_url') && $this->category) {
+            $url .= "{$this->category->getTranslation('slug', $activeLocale)}/";
         }
 
         $url .= $this->getTranslation('slug', $activeLocale);
 
-        if (! str($url)->startsWith('/')) {
-            $url = '/'.$url;
+        if (!str($url)->startsWith('/')) {
+            $url = '/' . $url;
         }
-        if ($activeLocale != Locales::getFirstLocale()['id'] && ! str($url)->startsWith("/{$activeLocale}")) {
-            $url = '/'.$activeLocale.$url;
+        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
+            $url = '/' . $activeLocale . $url;
         }
 
         return $native ? $url : url($url);
