@@ -86,18 +86,18 @@ class Article extends Model
         $overviewPage = self::getOverviewPage();
         $article = self::resolveArticle($lastSlugPart, $slugComponents);
 
-        if (!$article) {
+        if (! $article) {
             return;
         }
 
-        if (!self::isValidSlugStructure($article, $overviewPage, $slugComponents, $secondLastSlugPart)) {
+        if (! self::isValidSlugStructure($article, $overviewPage, $slugComponents, $secondLastSlugPart)) {
             return;
         }
 
         if ($overviewPage) {
 
             $page = self::getPageIfExists($overviewPage, $slugComponents[0]);
-            if (!$page) {
+            if (! $page) {
                 return;
             }
         }
@@ -117,8 +117,8 @@ class Article extends Model
         $useCategoryInUrl = Customsetting::get('article_use_category_in_url', null, false);
         $hasOverviewPage = $overviewPage && $overviewPage->id;
 
-        return (!$useCategoryInUrl && count($slugComponents) === ($overviewPage ? 2 : 1))
-            || (!$article->category && count($slugComponents) === ($overviewPage ? 2 : 1))
+        return (! $useCategoryInUrl && count($slugComponents) === ($overviewPage ? 2 : 1))
+            || (! $article->category && count($slugComponents) === ($overviewPage ? 2 : 1))
             || ($useCategoryInUrl && $article->category && $article->category->slug === $secondLastSlugPart && count($slugComponents) === ($overviewPage ? 3 : 2));
     }
 
@@ -133,7 +133,7 @@ class Article extends Model
 
     private static function renderArticleView($article, $page)
     {
-        if (!View::exists(env('SITE_THEME', 'dashed') . '.articles.show')) {
+        if (! View::exists(env('SITE_THEME', 'dashed') . '.articles.show')) {
             return 'pageNotFound';
         }
 
@@ -287,7 +287,7 @@ class Article extends Model
     {
         $originalLocale = app()->getLocale();
 
-        if (!$activeLocale) {
+        if (! $activeLocale) {
             $activeLocale = $originalLocale;
         }
 
@@ -309,10 +309,10 @@ class Article extends Model
 
         $url .= $this->getTranslation('slug', $activeLocale);
 
-        if (!str($url)->startsWith('/')) {
+        if (! str($url)->startsWith('/')) {
             $url = '/' . $url;
         }
-        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
+        if ($activeLocale != Locales::getFirstLocale()['id'] && ! str($url)->startsWith("/{$activeLocale}")) {
             $url = '/' . $activeLocale . $url;
         }
 
