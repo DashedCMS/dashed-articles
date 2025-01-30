@@ -99,6 +99,7 @@ class ArticleCategoryResource extends Resource
             ->filters([
                 //
             ])
+            ->reorderable('order')
             ->actions([
                 EditAction::make()
                     ->button(),
