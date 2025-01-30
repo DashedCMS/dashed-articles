@@ -49,7 +49,8 @@ class ArticleCategory extends Model
 
     public function childs(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_id', 'id');
+        return $this->hasMany(self::class, 'parent_id', 'id')
+            ->orderBy('order');
     }
 
     public static function resolveRoute($parameters = [])
