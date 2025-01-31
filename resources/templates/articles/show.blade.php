@@ -11,10 +11,10 @@
                 </h1>
 
                 @if(isset($article->contentBlocks['main_image']) && $article->contentBlocks['main_image'])
-                    <x-drift::image
+                    <x-dashed-files::image
                             class="mt-16 rounded"
                             config="dashed"
-                            :path="$article->contentBlocks['main_image']"
+                            :mediaId="$article->contentBlocks['main_image']"
                             :alt="$article->name"
                             :manipulations="[
                             'widen' => 1000,
