@@ -57,7 +57,7 @@ class Article extends Model
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(Author::class);
+        return $this->belongsTo(ArticleAuthor::class);
     }
 
     public function category(): BelongsTo
@@ -317,5 +317,10 @@ class Article extends Model
         }
 
         return $native ? $url : url($url);
+    }
+
+    public static function canHaveParent(): bool
+    {
+        return false;
     }
 }

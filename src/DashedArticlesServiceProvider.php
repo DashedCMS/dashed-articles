@@ -2,6 +2,9 @@
 
 namespace Dashed\DashedArticles;
 
+use Dashed\DashedArticles\Livewire\ShowAuthors;
+use Dashed\DashedArticles\Models\ArticleAuthor;
+use Dashed\DashedArticles\Models\Author;
 use Livewire\Livewire;
 use App\Providers\AppServiceProvider;
 use Spatie\LaravelPackageTools\Package;
@@ -23,6 +26,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
+        Livewire::component('articles.show-authors', ShowAuthors::class);
 
         //        if (config('dashed-articles.registerDefaultBuilderBlocks', true)) {
         //            cms()->builder('builderBlockClasses', [
@@ -41,6 +45,11 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         cms()->builder('plugins', [
             new DashedArticlesPlugin(),
         ]);
+
+        cms()->builder('blockDisabledForCache', [
+            'all-articles',
+            'all-authors',
+        ]);
     }
 
     public static function builderBlocks()
@@ -49,9 +58,19 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             Block::make('all-articles')
                 ->label('Alle artikelen')
                 ->schema([
+                    AppServiceProvider::getDefaultBlockFields(),
                 ]),
             Block::make('few-articles')
                 ->label('Paar artikelen')
+                ->schema([
+                    AppServiceProvider::getDefaultBlockFields(),
+                    TextInput::make('title')
+                        ->label('Titel'),
+                    TextInput::make('subtitle')
+                        ->label('Subtitel'),
+                ]),
+            Block::make('all-authors')
+                ->label('Alle auteurs')
                 ->schema([
                     AppServiceProvider::getDefaultBlockFields(),
                     TextInput::make('title')
@@ -95,6 +114,12 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                     'class' => ArticleCategory::class,
                     'nameField' => 'name',
                 ],
+                'articleAuthor' => [
+                    'name' => 'Artikel auteur',
+                    'pluralName' => 'Artikel auteurs',
+                    'class' => ArticleAuthor::class,
+                    'nameField' => 'name',
+                ],
             ]
         );
 
@@ -122,7 +147,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         if (! \Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
             $page->setTranslation('name', 'nl', 'Artikelen');
-            $page->setTranslation('slug', 'nl', 'articles');
+            $page->setTranslation('slug', 'nl', 'artikelen');
             $page->setTranslation('content', 'nl', [
                 [
                     'data' => [],
@@ -132,6 +157,21 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             $page->save();
 
             \Dashed\DashedCore\Models\Customsetting::set('article_overview_page_id', $page->id);
+        }
+
+        if (! \Dashed\DashedCore\Models\Customsetting::get('article_author_overview_page_id')) {
+            $page = new \Dashed\DashedPages\Models\Page();
+            $page->setTranslation('name', 'nl', 'Auteurs');
+            $page->setTranslation('slug', 'nl', 'auteurs');
+            $page->setTranslation('content', 'nl', [
+                [
+                    'data' => [],
+                    'type' => 'all-authors',
+                ],
+            ]);
+            $page->save();
+
+            \Dashed\DashedCore\Models\Customsetting::set('article_author_overview_page_id', $page->id);
         }
     }
 }

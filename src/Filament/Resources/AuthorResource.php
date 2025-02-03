@@ -2,8 +2,17 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
+use Dashed\DashedArticles\Models\ArticleAuthor;
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
+use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use Filament\Tables\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
@@ -25,8 +34,11 @@ use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
 class AuthorResource extends Resource
 {
     use Translatable;
+    use HasCustomBlocksTab;
+    use HasVisitableTab;
+    use Translatable;
 
-    protected static ?string $model = Author::class;
+    protected static ?string $model = ArticleAuthor::class;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -68,7 +80,7 @@ class AuthorResource extends Resource
                             }),
                         TextInput::make('slug')
                             ->label('Slug')
-                            ->unique('dashed__article_authors', 'slug', fn ($record) => $record)
+                            ->unique('dashed__article_authors', 'slug', fn($record) => $record)
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->required()
                             ->maxLength(255),
@@ -76,7 +88,14 @@ class AuthorResource extends Resource
                             ->name('Afbeelding')
                             ->acceptedFileTypes(['image/*'])
                             ->showFileName(),
-                    ]))->columns(2),
+                        cms()->getFilamentBuilderBlock(),
+                    ], static::customBlocksTab('articleAuthorBlocks')))
+                    ->columns(2),
+                Section::make('Globale informatie')
+                    ->schema(static::publishTab())
+                    ->collapsed(fn ($livewire) => $livewire instanceof EditArticle),
+                Section::make('Meta data')
+                    ->schema(static::metadataTab()),
             ]);
     }
 
@@ -88,18 +107,25 @@ class AuthorResource extends Resource
                     ->label('Naam')
                     ->sortable()
                     ->searchable(query: SearchQuery::make()),
+                TextColumn::make('articles_count')
+                    ->label('Aantal artikelen')
+                    ->sortable()
+                    ->counts('articles'),
             ])
+            ->defaultSort('created_at', 'desc')
+            ->reorderable('order')
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->actions([
-                EditAction::make()
-                    ->button(),
+                EditAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

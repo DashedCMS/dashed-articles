@@ -9,6 +9,4 @@
             {{ $articles->links('dashed.partials.pagination') }}
         </div>
     </x-container>
-
-    <x-dashed-core::global-blocks name="article-overview-page"/>
 </div>

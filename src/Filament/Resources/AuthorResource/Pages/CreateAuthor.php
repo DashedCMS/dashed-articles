@@ -2,6 +2,8 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages;
 
+use Dashed\DashedArticles\Models\ArticleAuthor;
+use Dashed\DashedCore\Filament\Concerns\HasCreatableCMSActions;
 use Illuminate\Support\Str;
 use Dashed\DashedArticles\Models\Article;
 use Filament\Resources\Pages\CreateRecord;
@@ -10,15 +12,20 @@ use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
 
 class CreateAuthor extends CreateRecord
 {
-    use Translatable;
+    use HasCreatableCMSActions;
 
     protected static string $resource = AuthorResource::class;
+
+    protected function getActions(): array
+    {
+        return self::CMSActions();
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['slug'] = Str::slug($data['slug'] ?: $data['name']);
 
-        while (Article::where('slug->'.$this->activeLocale, $data['slug'])->count()) {
+        while (ArticleAuthor::where('slug->'.$this->activeLocale, $data['slug'])->count()) {
             $data['slug'] .= Str::random(1);
         }
 

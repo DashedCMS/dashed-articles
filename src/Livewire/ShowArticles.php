@@ -17,13 +17,15 @@ class ShowArticles extends Component
     public ?string $search = null;
 
     public string $sort = 'latest';
+    public ?int $authorId = null;
 
-    public function mount(int $pagination = 12, ?int $category = null, ?string $search = null, string $sort = 'latest')
+    public function mount(int $pagination = 12, ?int $category = null, ?string $search = null, string $sort = 'latest', ?int $authorId = null)
     {
         $this->pagination = $pagination;
         $this->category = $category;
         $this->search = $search;
         $this->sort = $sort;
+        $this->authorId = $authorId;
     }
 
     public function updatingSearch()
@@ -37,10 +39,16 @@ class ShowArticles extends Component
         $search = $this->search;
         $sort = $this->sort;
         $pagination = $this->pagination;
+        $authorId = $this->authorId;
 
-        return view(env('SITE_THEME', 'dashed') . '.articles.show-articles', [
+        $view = $authorId ? 'show-author-articles' : 'show-articles';
+
+        return view(env('SITE_THEME', 'dashed') . '.articles.' . $view, [
             'articles' => Article::query()
                 ->publicShowable()
+                ->when($authorId, function ($query, $authorId) {
+                    return $query->where('author_id', $authorId);
+                })
                 ->when($category, function ($query, $category) {
                     return $query->where('category_id', $category);
                 })

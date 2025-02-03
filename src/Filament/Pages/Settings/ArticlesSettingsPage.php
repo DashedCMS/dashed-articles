@@ -32,6 +32,7 @@ class ArticlesSettingsPage extends Page implements HasForms
         $sites = Sites::getSites();
         foreach ($sites as $site) {
             $formData["article_overview_page_id_{$site['id']}"] = Customsetting::get('article_overview_page_id', $site['id']);
+            $formData["article_author_overview_page_id_{$site['id']}"] = Customsetting::get('article_author_overview_page_id', $site['id']);
             $formData["articlecategory_overview_page_id_{$site['id']}"] = Customsetting::get('articlecategory_overview_page_id', $site['id']);
             $formData["article_use_category_in_url_{$site['id']}"] = Customsetting::get('article_use_category_in_url', $site['id']);
         }
@@ -59,6 +60,11 @@ class ArticlesSettingsPage extends Page implements HasForms
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
                 Toggle::make("article_use_category_in_url_{$site['id']}")
                     ->label('Gebruik categorie in url'),
+                Select::make("article_author_overview_page_id_{$site['id']}")
+                    ->label('Artikel auteurs overview pagina')
+                    ->searchable()
+                    ->preload()
+                    ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
             ];
 
             $tabs[] = Tab::make($site['id'])
@@ -86,6 +92,7 @@ class ArticlesSettingsPage extends Page implements HasForms
 
         foreach ($sites as $site) {
             Customsetting::set('article_overview_page_id', $this->form->getState()["article_overview_page_id_{$site['id']}"], $site['id']);
+            Customsetting::set('article_author_overview_page_id', $this->form->getState()["article_author_overview_page_id_{$site['id']}"], $site['id']);
             Customsetting::set('articlecategory_overview_page_id', $this->form->getState()["articlecategory_overview_page_id_{$site['id']}"], $site['id']);
             Customsetting::set('article_use_category_in_url', $this->form->getState()["article_use_category_in_url_{$site['id']}"], $site['id']);
         }
