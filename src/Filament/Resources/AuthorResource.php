@@ -2,33 +2,30 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
-use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
-use Dashed\DashedArticles\Models\ArticleAuthor;
-use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
-use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
-use Filament\Tables\Actions\ForceDeleteBulkAction;
-use Filament\Tables\Actions\RestoreBulkAction;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Dashed\DashedArticles\Models\Author;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Resources\Concerns\Translatable;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\RestoreBulkAction;
+use Dashed\DashedArticles\Models\ArticleAuthor;
+use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
+use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use RalphJSmit\Filament\MediaLibrary\Forms\Components\MediaPicker;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\EditAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\ListAuthor;
+use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
 
 class AuthorResource extends Resource
@@ -80,7 +77,7 @@ class AuthorResource extends Resource
                             }),
                         TextInput::make('slug')
                             ->label('Slug')
-                            ->unique('dashed__article_authors', 'slug', fn($record) => $record)
+                            ->unique('dashed__article_authors', 'slug', fn ($record) => $record)
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->required()
                             ->maxLength(255),

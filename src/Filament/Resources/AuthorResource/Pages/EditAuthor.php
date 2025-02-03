@@ -2,15 +2,11 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages;
 
-use Dashed\DashedArticles\Models\ArticleAuthor;
-use Dashed\DashedCore\Filament\Concerns\HasEditableCMSActions;
 use Illuminate\Support\Str;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\LocaleSwitcher;
-use Dashed\DashedArticles\Models\Author;
 use Filament\Resources\Pages\EditRecord;
+use Dashed\DashedArticles\Models\ArticleAuthor;
 use Dashed\DashedArticles\Filament\Resources\AuthorResource;
-use Filament\Resources\Pages\EditRecord\Concerns\Translatable;
+use Dashed\DashedCore\Filament\Concerns\HasEditableCMSActions;
 
 class EditAuthor extends EditRecord
 {

@@ -2,9 +2,6 @@
 
 namespace Dashed\DashedArticles;
 
-use Dashed\DashedArticles\Livewire\ShowAuthors;
-use Dashed\DashedArticles\Models\ArticleAuthor;
-use Dashed\DashedArticles\Models\Author;
 use Livewire\Livewire;
 use App\Providers\AppServiceProvider;
 use Spatie\LaravelPackageTools\Package;
@@ -12,6 +9,8 @@ use Filament\Forms\Components\TextInput;
 use Dashed\DashedArticles\Models\Article;
 use Filament\Forms\Components\Builder\Block;
 use Dashed\DashedArticles\Livewire\LikeArticle;
+use Dashed\DashedArticles\Livewire\ShowAuthors;
+use Dashed\DashedArticles\Models\ArticleAuthor;
 use Dashed\DashedArticles\Livewire\ShowArticles;
 use Dashed\DashedArticles\Models\ArticleCategory;
 use Spatie\LaravelPackageTools\PackageServiceProvider;

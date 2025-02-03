@@ -2,10 +2,9 @@
 
 namespace Dashed\DashedArticles\Livewire;
 
-use Dashed\DashedArticles\Models\ArticleAuthor;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedArticles\Models\ArticleAuthor;
 
 class ShowAuthors extends Component
 {

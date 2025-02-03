@@ -2,15 +2,12 @@
 
 namespace Dashed\DashedArticles\Models;
 
-use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
-use Dashed\DashedCore\Models\Concerns\IsVisitable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Dashed\DashedCore\Models\Concerns\HasSearchScope;
+use Dashed\DashedCore\Models\Concerns\IsVisitable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 
 class ArticleAuthor extends Model
 {
