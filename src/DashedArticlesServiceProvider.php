@@ -56,9 +56,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         $defaultBlocks = [
             Block::make('all-articles')
                 ->label('Alle artikelen')
-                ->schema([
-                    AppServiceProvider::getDefaultBlockFields(),
-                ]),
+                ->schema([]),
             Block::make('few-articles')
                 ->label('Paar artikelen')
                 ->schema([
@@ -98,41 +96,10 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         //            __DIR__ . '/../resources/views/frontend' => resource_path('views/vendor/dashed-articles/frontend'),
         //        ], 'dashed-articles-views');
 
-        cms()->builder(
-            'routeModels',
-            [
-                'article' => [
-                    'name' => 'Artikel',
-                    'pluralName' => 'Artikelen',
-                    'class' => Article::class,
-                    'nameField' => 'name',
-                ],
-                'articleCategory' => [
-                    'name' => 'Artikel categorie',
-                    'pluralName' => 'Artikel categorieen',
-                    'class' => ArticleCategory::class,
-                    'nameField' => 'name',
-                ],
-                'articleAuthor' => [
-                    'name' => 'Artikel auteur',
-                    'pluralName' => 'Artikel auteurs',
-                    'class' => ArticleAuthor::class,
-                    'nameField' => 'name',
-                ],
-            ]
-        );
-
-        cms()->builder(
-            'settingPages',
-            [
-                'articles' => [
-                    'name' => 'Artikelen',
-                    'description' => 'Instellingen voor artikelen',
-                    'icon' => 'rss',
-                    'page' => ArticlesSettingsPage::class,
-                ],
-            ]
-        );
+        cms()->registerRouteModel(Article::class, 'Artikel', 'Artikelen');
+        cms()->registerRouteModel(ArticleCategory::class, 'Artikel categorie', 'Artikel categorieen');
+        cms()->registerRouteModel(ArticleAuthor::class, 'Artikel auteur', 'Artikel auteurs');
+        cms()->registerSettingsPage(ArticlesSettingsPage::class, 'Artikel');
 
         $package
             ->hasConfigFile([
@@ -143,7 +110,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public static function createDefaultPages(): void
     {
-        if (! \Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
+        if (!\Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
             $page->setTranslation('name', 'nl', 'Artikelen');
             $page->setTranslation('slug', 'nl', 'artikelen');
@@ -158,7 +125,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             \Dashed\DashedCore\Models\Customsetting::set('article_overview_page_id', $page->id);
         }
 
-        if (! \Dashed\DashedCore\Models\Customsetting::get('article_author_overview_page_id')) {
+        if (!\Dashed\DashedCore\Models\Customsetting::get('article_author_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
             $page->setTranslation('name', 'nl', 'Auteurs');
             $page->setTranslation('slug', 'nl', 'auteurs');
