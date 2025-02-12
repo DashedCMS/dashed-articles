@@ -57,100 +57,106 @@ class ArticleCategory extends Model
     {
         $slug = $parameters['slug'] ?? '';
         $slugComponents = explode('/', $slug);
+        $locale = App::getLocale();
 
-        $slug = $parameters['slug'] ?? '';
         $overviewPage = self::getOverviewPage();
+        $page = null;
+
         if ($overviewPage) {
-            $page = Page::publicShowable()->isNotHome()->where('slug->'.App::getLocale(), str($slugComponents[0])->replace('/', ''))->where('id', $overviewPage->id)->first();
-            if (! $page) {
+            $page = Page::publicShowable()
+                ->isNotHome()
+                ->where("slug->$locale", str($slugComponents[0])->replace('/', ''))
+                ->where('id', $overviewPage->id)
+                ->first();
+
+            if (!$page) {
                 return;
             }
-            unset($slugComponents[0]);
+            array_shift($slugComponents);
         }
 
-        if ($slug) {
-            if (! $slugComponents) {
-                $parentId = null;
-                foreach ($slugComponents as $slugPart) {
-                    $articleCategory = ArticleCategory::publicShowable()->where('slug->'.app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
-                    $parentId = $articleCategory?->id;
-                    if (! $articleCategory) {
-                        return;
-                    }
-                }
+        if (!$slug) {
+            return;
+        }
 
-                if (View::exists(env('SITE_THEME', 'dashed').'.article-categories.show-overview')) {
-                    seo()->metaData('metaTitle', $page->metadata && $page->metadata->title ? $page->metadata->title : $page->name);
-                    seo()->metaData('metaDescription', $page->metadata->description ?? '');
-                    seo()->metaData('ogType', 'article');
-                    if ($page->metadata && $page->metadata->image) {
-                        seo()->metaData('metaImage', $page->metadata->image);
-                    }
+        $articleCategory = self::findArticleCategory($slugComponents, $locale);
+        if (!$articleCategory) {
+            return;
+        }
 
-                    $correctLocale = App::getLocale();
-                    $alternateUrls = [];
-                    foreach (Sites::getLocales() as $locale) {
-                        if ($locale['id'] != $correctLocale) {
-                            LaravelLocalization::setLocale($locale['id']);
-                            App::setLocale($locale['id']);
-                            $alternateUrls[$locale['id']] = $page->getUrl();
-                        }
-                    }
-                    LaravelLocalization::setLocale($correctLocale);
-                    App::setLocale($correctLocale);
-                    seo()->metaData('alternateUrls', $alternateUrls);
+        $viewName = $slugComponents ? 'show' : 'show-overview';
+        $viewPath = env('SITE_THEME', 'dashed') . ".article-categories.$viewName";
 
-                    View::share('breadcrumbs', $page->breadcrumbs());
-                    View::share('categories', ArticleCategory::publicShowable()->paginate(12));
-                    View::share('model', $page ?? null);
-                    View::share('page', $page ?? null);
+        if (!View::exists($viewPath)) {
+            return 'pageNotFound';
+        }
 
-                    return view(env('SITE_THEME', 'dashed').'.article-categories.show-overview');
-                } else {
-                    return 'pageNotFound';
-                }
-            } else {
-                $parentId = null;
-                foreach ($slugComponents as $slugPart) {
-                    $articleCategory = ArticleCategory::publicShowable()->where('slug->'.app()->getLocale(), $slugPart)->where('parent_id', $parentId)->first();
-                    $parentId = $articleCategory?->id;
-                    if (! $articleCategory) {
-                        return;
-                    }
-                }
+        $model = $slugComponents ? $articleCategory : $page;
+        self::setSeoMetadata($model);
+        self::setAlternateUrls($model);
+        self::shareViewData($model, $articleCategory, $page);
 
-                if (View::exists(env('SITE_THEME', 'dashed').'.article-categories.show')) {
-                    seo()->metaData('metaTitle', $articleCategory->metadata && $articleCategory->metadata->title ? $articleCategory->metadata->title : $articleCategory->name);
-                    seo()->metaData('metaDescription', $articleCategory->metadata->description ?? '');
-                    seo()->metaData('ogType', 'article');
-                    if ($articleCategory->metadata && $articleCategory->metadata->image) {
-                        seo()->metaData('metaImage', $articleCategory->metadata->image);
-                    }
+        return view($viewPath);
+    }
 
-                    $correctLocale = App::getLocale();
-                    $alternateUrls = [];
-                    foreach (Sites::getLocales() as $locale) {
-                        if ($locale['id'] != $correctLocale) {
-                            LaravelLocalization::setLocale($locale['id']);
-                            App::setLocale($locale['id']);
-                            $alternateUrls[$locale['id']] = $articleCategory->getUrl();
-                        }
-                    }
-                    LaravelLocalization::setLocale($correctLocale);
-                    App::setLocale($correctLocale);
-                    seo()->metaData('alternateUrls', $alternateUrls);
+    private static function findArticleCategory($slugComponents, $locale)
+    {
+        $parentId = null;
+        foreach ($slugComponents as $slugPart) {
+            $articleCategory = ArticleCategory::publicShowable()
+                ->where("slug->$locale", $slugPart)
+                ->where('parent_id', $parentId)
+                ->first();
 
-                    View::share('articleCategory', $articleCategory);
-                    View::share('model', $articleCategory);
-                    View::share('breadcrumbs', $articleCategory->breadcrumbs());
-                    View::share('articles', $articleCategory->articles()->paginate(12));
-                    View::share('page', $page ?? null);
-
-                    return view(env('SITE_THEME', 'dashed').'.article-categories.show');
-                } else {
-                    return 'pageNotFound';
-                }
+            if (!$articleCategory) {
+                return null;
             }
+            $parentId = $articleCategory->id;
+        }
+        return $articleCategory;
+    }
+
+    private static function setSeoMetadata($model)
+    {
+        seo()->metaData('metaTitle', $model->metadata->title ?? $model->name);
+        seo()->metaData('metaDescription', $model->metadata->description ?? '');
+        seo()->metaData('ogType', 'article');
+        if ($model->metadata && $model->metadata->image) {
+            seo()->metaData('metaImage', $model->metadata->image);
+        }
+    }
+
+    private static function setAlternateUrls($model)
+    {
+        $correctLocale = App::getLocale();
+        $alternateUrls = collect(Sites::getLocales())
+            ->reject(fn($locale) => $locale['id'] == $correctLocale)
+            ->mapWithKeys(function ($locale) use ($model) {
+                LaravelLocalization::setLocale($locale['id']);
+                App::setLocale($locale['id']);
+                return [$locale['id'] => $model->getUrl()];
+            });
+
+        LaravelLocalization::setLocale($correctLocale);
+        App::setLocale($correctLocale);
+        seo()->metaData('alternateUrls', $alternateUrls);
+    }
+
+    private static function shareViewData($model, $articleCategory, $page)
+    {
+        View::share([
+            'breadcrumbs' => $model->breadcrumbs(),
+            'model' => $model,
+            'page' => $page,
+        ]);
+
+        if ($articleCategory) {
+            View::share([
+                'articleCategory' => $articleCategory,
+                'articles' => $articleCategory->articles()->paginate(12),
+            ]);
+        } else {
+            View::share('categories', ArticleCategory::publicShowable()->paginate(12));
         }
     }
 
@@ -197,27 +203,27 @@ class ArticleCategory extends Model
     {
         $originalLocale = app()->getLocale();
 
-        if (! $activeLocale) {
+        if (!$activeLocale) {
             $activeLocale = $originalLocale;
         }
 
         $url = '';
 
-        if ($overviewPage = self::getOverviewPage()) {
-            if (method_exists($this, 'parent') && $this->parent) {
-                $url .= "{$this->parent->getUrl($activeLocale)}/";
-            } else {
+        if (method_exists($this, 'parent') && $this->parent) {
+            $url .= "{$this->parent->getUrl($activeLocale)}/";
+        } else {
+            if ($overviewPage = self::getOverviewPage()) {
                 $url .= "{$overviewPage->getUrl($activeLocale)}/";
             }
         }
 
         $url .= $this->getTranslation('slug', $activeLocale);
 
-        if (! str($url)->startsWith('/')) {
-            $url = '/'.$url;
+        if (!str($url)->startsWith('/')) {
+            $url = '/' . $url;
         }
-        if ($activeLocale != Locales::getFirstLocale()['id'] && ! str($url)->startsWith("/{$activeLocale}")) {
-            $url = '/'.$activeLocale.$url;
+        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
+            $url = '/' . $activeLocale . $url;
         }
 
         return $native ? $url : url($url);

@@ -33,7 +33,7 @@ class ArticlesSettingsPage extends Page implements HasForms
         foreach ($sites as $site) {
             $formData["article_overview_page_id_{$site['id']}"] = Customsetting::get('article_overview_page_id', $site['id']);
             $formData["article_author_overview_page_id_{$site['id']}"] = Customsetting::get('article_author_overview_page_id', $site['id']);
-            $formData["articlecategory_overview_page_id_{$site['id']}"] = Customsetting::get('articlecategory_overview_page_id', $site['id']);
+            $formData["article_category_overview_page_id_{$site['id']}"] = Customsetting::get('article_category_overview_page_id', $site['id']);
             $formData["article_use_category_in_url_{$site['id']}"] = Customsetting::get('article_use_category_in_url', $site['id']);
         }
 
@@ -53,7 +53,7 @@ class ArticlesSettingsPage extends Page implements HasForms
                     ->searchable()
                     ->preload()
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
-                Select::make("articlecategory_overview_page_id_{$site['id']}")
+                Select::make("article_category_overview_page_id_{$site['id']}")
                     ->label('Artikel category overview pagina')
                     ->searchable()
                     ->preload()
@@ -93,7 +93,7 @@ class ArticlesSettingsPage extends Page implements HasForms
         foreach ($sites as $site) {
             Customsetting::set('article_overview_page_id', $this->form->getState()["article_overview_page_id_{$site['id']}"], $site['id']);
             Customsetting::set('article_author_overview_page_id', $this->form->getState()["article_author_overview_page_id_{$site['id']}"], $site['id']);
-            Customsetting::set('articlecategory_overview_page_id', $this->form->getState()["articlecategory_overview_page_id_{$site['id']}"], $site['id']);
+            Customsetting::set('article_category_overview_page_id', $this->form->getState()["article_category_overview_page_id_{$site['id']}"], $site['id']);
             Customsetting::set('article_use_category_in_url', $this->form->getState()["article_use_category_in_url_{$site['id']}"], $site['id']);
         }
 

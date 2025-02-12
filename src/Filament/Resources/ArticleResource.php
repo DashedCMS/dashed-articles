@@ -131,6 +131,11 @@ class ArticleResource extends Resource
             ->reorderable('order')
             ->filters([
                 TrashedFilter::make(),
+                SelectFilter::make('category')
+                    ->label('Categorie')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('category', 'name'),
             ])
             ->actions([
                 EditAction::make(),
