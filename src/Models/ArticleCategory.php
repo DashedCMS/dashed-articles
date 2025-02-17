@@ -39,7 +39,8 @@ class ArticleCategory extends Model
 
     public function articles()
     {
-        return $this->hasMany(Article::class, 'category_id');
+        return $this->hasMany(Article::class, 'category_id')
+            ->orderBy('order');
     }
 
     public function parent(): BelongsTo
@@ -69,25 +70,25 @@ class ArticleCategory extends Model
                 ->where('id', $overviewPage->id)
                 ->first();
 
-            if (! $page) {
+            if (!$page) {
                 return;
             }
             array_shift($slugComponents);
         }
 
-        if (! $slug) {
+        if (!$slug) {
             return;
         }
 
         $articleCategory = self::findArticleCategory($slugComponents, $locale);
-        if (! $articleCategory) {
+        if (!$articleCategory) {
             return;
         }
 
         $viewName = $slugComponents ? 'show' : 'show-overview';
         $viewPath = env('SITE_THEME', 'dashed') . ".article-categories.$viewName";
 
-        if (! View::exists($viewPath)) {
+        if (!View::exists($viewPath)) {
             return 'pageNotFound';
         }
 
@@ -108,12 +109,11 @@ class ArticleCategory extends Model
                 ->where('parent_id', $parentId)
                 ->first();
 
-            if (! $articleCategory) {
+            if (!$articleCategory) {
                 return null;
             }
             $parentId = $articleCategory->id;
         }
-
         return $articleCategory;
     }
 
@@ -131,11 +131,10 @@ class ArticleCategory extends Model
     {
         $correctLocale = App::getLocale();
         $alternateUrls = collect(Sites::getLocales())
-            ->reject(fn ($locale) => $locale['id'] == $correctLocale)
+            ->reject(fn($locale) => $locale['id'] == $correctLocale)
             ->mapWithKeys(function ($locale) use ($model) {
                 LaravelLocalization::setLocale($locale['id']);
                 App::setLocale($locale['id']);
-
                 return [$locale['id'] => $model->getUrl()];
             });
 
@@ -205,7 +204,7 @@ class ArticleCategory extends Model
     {
         $originalLocale = app()->getLocale();
 
-        if (! $activeLocale) {
+        if (!$activeLocale) {
             $activeLocale = $originalLocale;
         }
 
@@ -221,10 +220,10 @@ class ArticleCategory extends Model
 
         $url .= $this->getTranslation('slug', $activeLocale);
 
-        if (! str($url)->startsWith('/')) {
+        if (!str($url)->startsWith('/')) {
             $url = '/' . $url;
         }
-        if ($activeLocale != Locales::getFirstLocale()['id'] && ! str($url)->startsWith("/{$activeLocale}")) {
+        if ($activeLocale != Locales::getFirstLocale()['id'] && !str($url)->startsWith("/{$activeLocale}")) {
             $url = '/' . $activeLocale . $url;
         }
 
