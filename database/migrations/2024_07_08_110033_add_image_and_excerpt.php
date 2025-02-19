@@ -21,7 +21,7 @@ return new class () extends Migration {
             foreach(\Dashed\DashedCore\Classes\Locales::getLocales() as $locale){
                 app()->setLocale($locale['id']);
                 $article->setTranslation('excerpt', $locale['id'], $article->contentBlocks['excerpt'] ?? '');
-                $article->setTranslation('image', $locale['id'], $article->contentBlocks['image'] ?? '');
+                $article->setTranslation('image', $locale['id'], $article->contentBlocks['main_image'] ?? '');
             }
             $article->save();
         }
