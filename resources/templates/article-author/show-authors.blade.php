@@ -1,4 +1,4 @@
-<div class="bg-white @if($blockData['top_margin']) pt-16 sm:pt-24 @endif @if($blockData['bottom_margin']) pb-16 sm:pb-24 @endif">
+<div class="bg-white @if($blockData['top_margin'] ?? false) pt-16 sm:pt-24 @endif @if($blockData['bottom_margin'] ?? false) pb-16 sm:pb-24 @endif">
     <x-container :show="$blockData['in_container'] ?? false">
         <div class="mx-auto max-w-2xl lg:mx-0">
             <h2 class="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">

@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -93,6 +94,10 @@ class ArticleResource extends Resource
                             ->nullable()
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('category', 'name'),
+                        Textarea::make('excerpt')
+                            ->name('Korte tekst'),
+                        mediaHelper()->field('image', 'Hoofd afbeelding', isImage: true)
+                            ->helperText('Deze wordt gebruikt voor de overzichtspagina pagina'),
                         cms()->getFilamentBuilderBlock(),
                     ], static::customBlocksTab('articleBlocks')))
                     ->columns(2),
