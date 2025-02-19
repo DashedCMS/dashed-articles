@@ -110,13 +110,17 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public static function createDefaultPages(): void
     {
-        if (! \Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
+        if (!\Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
             $page->setTranslation('name', 'nl', 'Artikelen');
             $page->setTranslation('slug', 'nl', 'artikelen');
             $page->setTranslation('content', 'nl', [
                 [
-                    'data' => [],
+                    'data' => [
+                        'in_container' => true,
+                        'top_margin' => true,
+                        'bottom_margin' => true,
+                    ],
                     'type' => 'all-articles',
                 ],
             ]);
@@ -125,13 +129,17 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             \Dashed\DashedCore\Models\Customsetting::set('article_overview_page_id', $page->id);
         }
 
-        if (! \Dashed\DashedCore\Models\Customsetting::get('article_author_overview_page_id')) {
+        if (!\Dashed\DashedCore\Models\Customsetting::get('article_author_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
             $page->setTranslation('name', 'nl', 'Auteurs');
             $page->setTranslation('slug', 'nl', 'auteurs');
             $page->setTranslation('content', 'nl', [
                 [
-                    'data' => [],
+                    'data' => [
+                        'in_container' => true,
+                        'top_margin' => true,
+                        'bottom_margin' => true,
+                    ],
                     'type' => 'all-authors',
                 ],
             ]);
