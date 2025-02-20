@@ -4,6 +4,7 @@ namespace Dashed\DashedArticles\Filament\Resources;
 
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
@@ -97,7 +98,11 @@ class ArticleCategoryResource extends Resource
                     ->searchable(query: SearchQuery::make()),
             ], static::visitableTableColumns()))
             ->filters([
-                //
+                SelectFilter::make('parent')
+                    ->label('Bovenliggend item')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('parent', 'name'),
             ])
             ->reorderable('order')
             ->actions([
