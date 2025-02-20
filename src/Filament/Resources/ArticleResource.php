@@ -81,18 +81,18 @@ class ArticleResource extends Resource
                             }),
                         TextInput::make('slug')
                             ->label('Slug')
-                            ->unique('dashed__articles', 'slug', fn($record) => $record)
+                            ->unique('dashed__articles', 'slug', fn ($record) => $record)
                             ->helperText('Laat leeg om automatisch te laten genereren')
                             ->maxLength(255),
                         Select::make('author_id')
                             ->label('Auteur')
                             ->nullable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('author', 'name'),
                         Select::make('category_id')
                             ->label('Categorie')
                             ->nullable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('category', 'name'),
                         Textarea::make('excerpt')
                             ->name('Korte tekst'),
@@ -103,7 +103,7 @@ class ArticleResource extends Resource
                     ->columns(2),
                 Section::make('Globale informatie')
                     ->schema(static::publishTab())
-                    ->collapsed(fn($livewire) => $livewire instanceof EditArticle),
+                    ->collapsed(fn ($livewire) => $livewire instanceof EditArticle),
                 Section::make('Meta data')
                     ->schema(static::metadataTab()),
             ]);
