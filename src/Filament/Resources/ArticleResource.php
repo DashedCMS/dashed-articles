@@ -92,6 +92,8 @@ class ArticleResource extends Resource
                         Select::make('category_id')
                             ->label('Categorie')
                             ->nullable()
+                            ->searchable()
+                            ->preload()
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('category', 'name'),
                         Textarea::make('excerpt')
@@ -127,6 +129,7 @@ class ArticleResource extends Resource
             ->filters([
                 SelectFilter::make('category')
                     ->label('Categorie')
+                    ->searchable()
                     ->multiple()
                     ->relationship('category', 'name'),
                 SelectFilter::make('author')
@@ -140,6 +143,7 @@ class ArticleResource extends Resource
                 TrashedFilter::make(),
                 SelectFilter::make('category')
                     ->label('Categorie')
+                    ->searchable()
                     ->multiple()
                     ->preload()
                     ->relationship('category', 'name'),
