@@ -102,6 +102,7 @@ class ArticleCategoryResource extends Resource
                     ->label('Bovenliggend item')
                     ->multiple()
                     ->preload()
+                    ->searchable()
                     ->relationship('parent', 'name'),
             ])
             ->reorderable('order')
