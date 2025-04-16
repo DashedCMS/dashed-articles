@@ -18,14 +18,16 @@ class ShowArticles extends Component
 
     public string $sort = 'latest';
     public ?int $authorId = null;
+    public array $blockData = [];
 
-    public function mount(int $pagination = 12, ?int $category = null, ?string $search = null, string $sort = 'latest', ?int $authorId = null)
+    public function mount(int $pagination = 12, ?int $category = null, ?string $search = null, string $sort = 'latest', ?int $authorId = null, array $blockData = [])
     {
         $this->pagination = $pagination;
         $this->category = $category;
         $this->search = $search;
         $this->sort = $sort;
         $this->authorId = $authorId;
+        $this->blockData = $blockData;
     }
 
     public function updatingSearch()

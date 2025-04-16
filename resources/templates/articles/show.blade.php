@@ -10,11 +10,11 @@
                     {{ $article->name }}
                 </h1>
 
-                @if(isset($article->contentBlocks['main_image']) && $article->contentBlocks['main_image'])
+                @if($article->image)
                     <x-dashed-files::image
                             class="mt-16 rounded"
                             config="dashed"
-                            :mediaId="$article->contentBlocks['main_image']"
+                            :mediaId="$article->image"
                             :alt="$article->name"
                             :manipulations="[
                             'widen' => 1000,
