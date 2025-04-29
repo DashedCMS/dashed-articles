@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedArticles;
 
-use Dashed\DashedCore\Classes\Locales;
 use Livewire\Livewire;
 use App\Providers\AppServiceProvider;
+use Dashed\DashedCore\Classes\Locales;
 use Spatie\LaravelPackageTools\Package;
 use Filament\Forms\Components\TextInput;
 use Dashed\DashedArticles\Models\Article;
