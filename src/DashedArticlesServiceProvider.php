@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles;
 
+use Dashed\DashedCore\Classes\Locales;
 use Livewire\Livewire;
 use App\Providers\AppServiceProvider;
 use Spatie\LaravelPackageTools\Package;
@@ -112,18 +113,20 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
     {
         if (! \Dashed\DashedCore\Models\Customsetting::get('article_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
-            $page->setTranslation('name', 'nl', 'Artikelen');
-            $page->setTranslation('slug', 'nl', 'artikelen');
-            $page->setTranslation('content', 'nl', [
-                [
-                    'data' => [
-                        'in_container' => true,
-                        'top_margin' => true,
-                        'bottom_margin' => true,
+            foreach (Locales::getActivatedLocalesFromSites() as $locale) {
+                $page->setTranslation('name', $locale, 'Artikelen');
+                $page->setTranslation('slug', $locale, 'artikelen');
+                $page->setTranslation('content', $locale, [
+                    [
+                        'data' => [
+                            'in_container' => true,
+                            'top_margin' => true,
+                            'bottom_margin' => true,
+                        ],
+                        'type' => 'all-articles',
                     ],
-                    'type' => 'all-articles',
-                ],
-            ]);
+                ]);
+            }
             $page->save();
 
             \Dashed\DashedCore\Models\Customsetting::set('article_overview_page_id', $page->id);
@@ -131,18 +134,20 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
         if (! \Dashed\DashedCore\Models\Customsetting::get('article_author_overview_page_id')) {
             $page = new \Dashed\DashedPages\Models\Page();
-            $page->setTranslation('name', 'nl', 'Auteurs');
-            $page->setTranslation('slug', 'nl', 'auteurs');
-            $page->setTranslation('content', 'nl', [
-                [
-                    'data' => [
-                        'in_container' => true,
-                        'top_margin' => true,
-                        'bottom_margin' => true,
+            foreach (Locales::getActivatedLocalesFromSites() as $locale) {
+                $page->setTranslation('name', $locale, 'Auteurs');
+                $page->setTranslation('slug', $locale, 'auteurs');
+                $page->setTranslation('content', $locale, [
+                    [
+                        'data' => [
+                            'in_container' => true,
+                            'top_margin' => true,
+                            'bottom_margin' => true,
+                        ],
+                        'type' => 'all-authors',
                     ],
-                    'type' => 'all-authors',
-                ],
-            ]);
+                ]);
+            }
             $page->save();
 
             \Dashed\DashedCore\Models\Customsetting::set('article_author_overview_page_id', $page->id);
