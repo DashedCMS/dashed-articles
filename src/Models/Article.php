@@ -168,9 +168,9 @@ class Article extends Model
     {
         $defaultMetadata = [
             'metaTitle' => $article->metadata->title ?? $article->name,
-            'metaDescription' => $article->metadata->description ?? '',
+            'metaDescription' => $article->metadata && $article->metadata->description ? $article->metadata->description : $article->excerpt,
             'ogType' => 'article',
-            'metaImage' => $article->metadata->image ?? null,
+            'metaImage' => $article->metadata && $article->metadata->image ? $article->metadata->image : $article->image,
         ];
 
         foreach ($defaultMetadata as $key => $value) {
