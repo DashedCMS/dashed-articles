@@ -115,7 +115,7 @@ class ArticleCategory extends Model
             $parentId = $articleCategory->id;
         }
 
-        return $articleCategory;
+        return $articleCategory ?? '';
     }
 
     private static function setSeoMetadata($model)
