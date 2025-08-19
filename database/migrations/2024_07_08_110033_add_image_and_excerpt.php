@@ -17,8 +17,8 @@ return new class () extends Migration {
                 ->nullable();
         });
 
-        foreach(\Dashed\DashedArticles\Models\Article::all() as $article){
-            foreach(\Dashed\DashedCore\Classes\Locales::getLocales() as $locale){
+        foreach (\Dashed\DashedArticles\Models\Article::all() as $article) {
+            foreach (\Dashed\DashedCore\Classes\Locales::getLocales() as $locale) {
                 app()->setLocale($locale['id']);
                 $article->setTranslation('excerpt', $locale['id'], $article->contentBlocks['excerpt'] ?? '');
                 $article->setTranslation('image', $locale['id'], $article->contentBlocks['main_image'] ?? '');
