@@ -45,7 +45,7 @@ class ShowArticles extends Component
 
         $view = $authorId ? 'show-author-articles' : 'show-articles';
 
-        return view(env('SITE_THEME', 'dashed') . '.articles.' . $view, [
+        return view(config('dashed-core.site_theme') . '.articles.' . $view, [
             'articles' => Article::query()
                 ->publicShowable()
                 ->when($authorId, function ($query, $authorId) {

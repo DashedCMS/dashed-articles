@@ -149,7 +149,7 @@ class Article extends Model
 
     private static function renderArticleView($article, $page)
     {
-        if (! View::exists(env('SITE_THEME', 'dashed') . '.articles.show')) {
+        if (! View::exists(config('dashed-core.site_theme') . '.articles.show')) {
             return 'pageNotFound';
         }
 
@@ -161,7 +161,7 @@ class Article extends Model
         View::share('breadcrumbs', $article->breadcrumbs());
         View::share('page', $page ?: $article);
 
-        return view(env('SITE_THEME', 'dashed') . '.articles.show');
+        return view(config('dashed-core.site_theme') . '.articles.show');
     }
 
     private static function setSeoMetadata($article)

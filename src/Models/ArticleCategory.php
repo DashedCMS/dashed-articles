@@ -86,7 +86,7 @@ class ArticleCategory extends Model
         }
 
         $viewName = $slugComponents ? 'show' : 'show-overview';
-        $viewPath = env('SITE_THEME', 'dashed') . ".article-categories.$viewName";
+        $viewPath = config('dashed-core.site_theme') . ".article-categories.$viewName";
 
         if (! View::exists($viewPath)) {
             return 'pageNotFound';
