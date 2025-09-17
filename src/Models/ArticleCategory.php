@@ -40,6 +40,7 @@ class ArticleCategory extends Model
     public function articles()
     {
         return $this->hasMany(Article::class, 'category_id')
+            ->publicShowable()
             ->orderBy('order');
     }
 
