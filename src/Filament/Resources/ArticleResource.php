@@ -2,30 +2,32 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Filament\Forms\Set;
-use Filament\Forms\Form;
+use UnitEnum;
+use BackedEnum;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Dashed\DashedArticles\Models\Article;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\RestoreBulkAction;
-use Filament\Tables\Actions\ForceDeleteBulkAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
 use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\ListArticles;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;
@@ -40,9 +42,9 @@ class ArticleResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-book-open';
 
-    protected static ?string $navigationGroup = 'Artikelen';
+    protected static string | UnitEnum | null $navigationGroup = 'Artikelen';
 
     protected static ?string $navigationLabel = 'Artikelen';
 
@@ -62,11 +64,11 @@ class ArticleResource extends Resource
         ];
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Section::make('Content')
+                Section::make('Content')->columnSpanFull()
                     ->schema(array_merge([
                         TextInput::make('name')
                             ->label('Name')
@@ -103,10 +105,10 @@ class ArticleResource extends Resource
                         cms()->getFilamentBuilderBlock(),
                     ], static::customBlocksTab('articleBlocks')))
                     ->columns(2),
-                Section::make('Globale informatie')
+                Section::make('Globale informatie')->columnSpanFull()
                     ->schema(static::publishTab())
                     ->collapsed(fn ($livewire) => $livewire instanceof EditArticle),
-                Section::make('Meta data')
+                Section::make('Meta data')->columnSpanFull()
                     ->schema(static::metadataTab()),
             ]);
     }
@@ -148,11 +150,11 @@ class ArticleResource extends Resource
                     ->preload()
                     ->relationship('category', 'name'),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),

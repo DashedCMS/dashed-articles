@@ -9,7 +9,7 @@
             ]"
         />
     @endif
-    <div class="absolute inset-0 -z-10 bg-gradient-to-tr from-primary-500 via-primary-500/60"></div>
+    <div class="absolute inset-0 -z-10 bg-linear-to-tr from-primary-500 via-primary-500/60"></div>
     <div class="absolute inset-0 -z-10 rounded-2xl ring-1 ring-inset ring-black/10"></div>
 
     <div class="bg-primary-800 px-4 py-1 rounded-full text-xs font-semibold leading-5 text-white absolute top-8 left-8">

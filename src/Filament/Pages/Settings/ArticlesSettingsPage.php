@@ -3,26 +3,26 @@
 namespace Dashed\DashedArticles\Filament\Pages\Settings;
 
 use Filament\Pages\Page;
-use Filament\Forms\Components\Tabs;
+use Filament\Schemas\Schema;
 use Dashed\DashedCore\Classes\Sites;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Schemas\Components\Tabs;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Contracts\HasSchemas;
 use Dashed\DashedCore\Models\Customsetting;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Dashed\DashedPages\Models\Page as PageModel;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
 
-class ArticlesSettingsPage extends Page implements HasForms
+class ArticlesSettingsPage extends Page implements HasSchemas
 {
-    use InteractsWithForms;
-
+    use InteractsWithSchemas;
     protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $title = 'Artikelen';
 
-    protected static string $view = 'dashed-core::settings.pages.default-settings';
+    protected string $view = 'dashed-core::settings.pages.default-settings';
 
     public array $data = [];
 
@@ -40,14 +40,14 @@ class ArticlesSettingsPage extends Page implements HasForms
         $this->form->fill($formData);
     }
 
-    protected function getFormSchema(): array
+    public function form(Schema $schema): Schema
     {
         $sites = Sites::getSites();
         $tabGroups = [];
 
         $tabs = [];
         foreach ($sites as $site) {
-            $schema = [
+            $newSchema = [
                 Select::make("article_overview_page_id_{$site['id']}")
                     ->label('Artikel overview pagina')
                     ->searchable()
@@ -69,7 +69,7 @@ class ArticlesSettingsPage extends Page implements HasForms
 
             $tabs[] = Tab::make($site['id'])
                 ->label(ucfirst($site['name']))
-                ->schema($schema)
+                ->schema($newSchema)
                 ->columns([
                     'default' => 1,
                     'lg' => 2,
@@ -78,12 +78,8 @@ class ArticlesSettingsPage extends Page implements HasForms
         $tabGroups[] = Tabs::make('Sites')
             ->tabs($tabs);
 
-        return $tabGroups;
-    }
-
-    public function getFormStatePath(): ?string
-    {
-        return 'data';
+        return $schema->schema($tabGroups)
+            ->statePath('data');
     }
 
     public function submit()
