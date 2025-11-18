@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
+use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use UnitEnum;
 use BackedEnum;
 use Filament\Tables\Table;
@@ -116,13 +117,7 @@ class AuthorResource extends Resource
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions(ToolbarActions::getActions());
     }
 
     public static function getRelations(): array
