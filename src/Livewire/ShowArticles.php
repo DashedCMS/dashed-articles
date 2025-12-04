@@ -26,7 +26,15 @@ class ShowArticles extends Component
     {
         $this->pagination = $pagination;
         $this->category = $category;
-        $this->categoryIds = $category ? ArticleCategory::find($category)?->allChildIds() : [];
+        if ($category) {
+            $categoryIds = [$category];
+            $categoryModel = ArticleCategory::find($category);
+            if ($categoryModel) {
+                $childIds = $categoryModel->allChildIds();
+                $categoryIds = array_merge($categoryIds, $childIds);
+            }
+            $this->categoryIds = $categoryIds;
+        }
         $this->search = $search;
         $this->sort = $sort;
         $this->authorId = $authorId;
