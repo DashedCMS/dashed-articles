@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use UnitEnum;
 use BackedEnum;
 use Filament\Tables\Table;
@@ -11,10 +10,7 @@ use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -22,13 +18,13 @@ use Filament\Schemas\Components\Section;
 use Dashed\DashedArticles\Models\Article;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedCore\Filament\Concerns\HasVisitableTab;
 use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\EditArticle;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\ListArticles;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle;

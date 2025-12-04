@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedArticles\Livewire;
 
+use Dashed\DashedArticles\Models\ArticleCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Dashed\DashedArticles\Models\Article;
@@ -13,6 +14,7 @@ class ShowArticles extends Component
     public int $pagination = 12;
 
     public ?int $category = null;
+    public ?array $categoryIds = [];
 
     public ?string $search = null;
 
@@ -24,6 +26,7 @@ class ShowArticles extends Component
     {
         $this->pagination = $pagination;
         $this->category = $category;
+        $this->categoryIds = $category ? ArticleCategory::find($category)?->allChildIds() : [];
         $this->search = $search;
         $this->sort = $sort;
         $this->authorId = $authorId;
@@ -37,7 +40,7 @@ class ShowArticles extends Component
 
     public function render()
     {
-        $category = $this->category;
+        $categoryIds = $this->categoryIds;
         $search = $this->search;
         $sort = $this->sort;
         $pagination = $this->pagination;
@@ -51,8 +54,8 @@ class ShowArticles extends Component
                 ->when($authorId, function ($query, $authorId) {
                     return $query->where('author_id', $authorId);
                 })
-                ->when($category, function ($query, $category) {
-                    return $query->where('category_id', $category);
+                ->when($categoryIds, function ($query, $categoryIds) {
+                    return $query->whereIn('category_id', $categoryIds);
                 })
                 ->when($search, function ($query, $search) {
                     return $query->search($search);

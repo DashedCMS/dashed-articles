@@ -14,15 +14,18 @@ use Dashed\DashedArticles\Livewire\ShowAuthors;
 use Dashed\DashedArticles\Models\ArticleAuthor;
 use Dashed\DashedArticles\Livewire\ShowArticles;
 use Dashed\DashedArticles\Models\ArticleCategory;
+use Dashed\DashedCore\Support\MeasuresServiceProvider;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
 
 class DashedArticlesServiceProvider extends PackageServiceProvider
 {
+    use MeasuresServiceProvider;
     public static string $name = 'dashed-articles';
 
     public function bootingPackage()
     {
+        $this->logProviderMemory('bootingPackage:start');
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
@@ -50,6 +53,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             'all-articles',
             'all-authors',
         ]);
+        $this->logProviderMemory('bootingPackage:end');
     }
 
     public static function builderBlocks()
@@ -84,6 +88,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public function configurePackage(Package $package): void
     {
+        $this->logProviderMemory('configurePackage:start');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         //        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dashed-articles');
@@ -107,6 +112,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                 'dashed-articles',
             ])
             ->name(self::$name);
+        $this->logProviderMemory('configurePackage:end');
     }
 
     public static function createDefaultPages(): void
