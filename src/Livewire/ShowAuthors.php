@@ -37,7 +37,7 @@ class ShowAuthors extends Component
         $sort = $this->sort;
         $pagination = $this->pagination;
 
-        return view(config('dashed-core.site_theme') . '.article-author.show-authors', [
+        return view(config('dashed-core.site_theme', 'dashed') . '.article-author.show-authors', [
             'authors' => ArticleAuthor::query()
                 ->publicShowable()
                 ->when($search, function ($query, $search) {

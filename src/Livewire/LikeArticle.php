@@ -41,6 +41,6 @@ class LikeArticle extends Component
 
     public function render()
     {
-        return view(config('dashed-core.site_theme') . '.articles.like-article');
+        return view(config('dashed-core.site_theme', 'dashed') . '.articles.like-article');
     }
 }

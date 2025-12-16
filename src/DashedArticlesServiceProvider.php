@@ -94,7 +94,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         //        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dashed-articles');
 
         $this->publishes([
-            __DIR__ . '/../resources/templates' => resource_path('views/' . config('dashed-core.site_theme')),
+            __DIR__ . '/../resources/templates' => resource_path('views/' . config('dashed-core.site_theme', 'dashed')),
             __DIR__ . '/../resources/component-templates' => resource_path('views/components'),
         ], 'dashed-templates');
 

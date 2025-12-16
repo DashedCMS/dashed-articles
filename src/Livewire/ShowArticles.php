@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedArticles\Livewire;
 
-use Dashed\DashedArticles\Models\ArticleCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedArticles\Models\ArticleCategory;
 
 class ShowArticles extends Component
 {
@@ -56,7 +56,7 @@ class ShowArticles extends Component
 
         $view = $authorId ? 'show-author-articles' : 'show-articles';
 
-        return view(config('dashed-core.site_theme') . '.articles.' . $view, [
+        return view(config('dashed-core.site_theme', 'dashed') . '.articles.' . $view, [
             'articles' => Article::query()
                 ->publicShowable()
                 ->when($authorId, function ($query, $authorId) {
