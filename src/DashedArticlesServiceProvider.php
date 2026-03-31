@@ -3,6 +3,7 @@
 namespace Dashed\DashedArticles;
 
 use Livewire\Livewire;
+use Illuminate\Support\Facades\Gate;
 use App\Providers\AppServiceProvider;
 use Dashed\DashedCore\Classes\Locales;
 use Spatie\LaravelPackageTools\Package;
@@ -14,18 +15,15 @@ use Dashed\DashedArticles\Livewire\ShowAuthors;
 use Dashed\DashedArticles\Models\ArticleAuthor;
 use Dashed\DashedArticles\Livewire\ShowArticles;
 use Dashed\DashedArticles\Models\ArticleCategory;
-use Dashed\DashedCore\Support\MeasuresServiceProvider;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
 
 class DashedArticlesServiceProvider extends PackageServiceProvider
 {
-    use MeasuresServiceProvider;
     public static string $name = 'dashed-articles';
 
     public function bootingPackage()
     {
-        $this->logProviderMemory('bootingPackage:start');
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
@@ -53,7 +51,21 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             'all-articles',
             'all-authors',
         ]);
-        $this->logProviderMemory('bootingPackage:end');
+        Gate::policy(\Dashed\DashedArticles\Models\Article::class, \Dashed\DashedArticles\Policies\ArticlePolicy::class);
+        Gate::policy(\Dashed\DashedArticles\Models\ArticleCategory::class, \Dashed\DashedArticles\Policies\ArticleCategoryPolicy::class);
+        Gate::policy(\Dashed\DashedArticles\Models\ArticleAuthor::class, \Dashed\DashedArticles\Policies\ArticleAuthorPolicy::class);
+
+        cms()->registerRolePermissions('Artikelen', [
+            'view_article' => 'Artikelen bekijken',
+            'edit_article' => 'Artikelen bewerken',
+            'delete_article' => 'Artikelen verwijderen',
+            'view_article_category' => 'Artikel categorieën bekijken',
+            'edit_article_category' => 'Artikel categorieën bewerken',
+            'delete_article_category' => 'Artikel categorieën verwijderen',
+            'view_article_author' => 'Artikel auteurs bekijken',
+            'edit_article_author' => 'Artikel auteurs bewerken',
+            'delete_article_author' => 'Artikel auteurs verwijderen',
+        ]);
     }
 
     public static function builderBlocks()
@@ -88,7 +100,6 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public function configurePackage(Package $package): void
     {
-        $this->logProviderMemory('configurePackage:start');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         //        $this->loadViewsFrom(__DIR__.'/../resources/views', 'dashed-articles');
@@ -112,7 +123,6 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
                 'dashed-articles',
             ])
             ->name(self::$name);
-        $this->logProviderMemory('configurePackage:end');
     }
 
     public static function createDefaultPages(): void
