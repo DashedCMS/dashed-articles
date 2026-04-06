@@ -55,7 +55,7 @@ class RunKeywordResearchJob implements ShouldQueue
         try {
             $result = ClaudeHelper::runJsonPrompt(
                 $this->buildPrompt($siteName, $brandContext),
-                maxTokens: 4000,
+                maxTokens: 8000,
             );
         } catch (ClaudeRateLimitException $e) {
             $this->research->setProgress("Rate limit bereikt (poging {$attempt}/{$this->tries}), wordt over ~1 minuut hervat.");
@@ -155,7 +155,7 @@ class RunKeywordResearchJob implements ShouldQueue
 
         Stel ook content clusters voor. Een cluster groepeert keywords die samen één pagina/artikel kunnen ondersteunen.
 
-        Retourneer UITSLUITEND geldig JSON:
+        BELANGRIJK: Houd de "notes" velden zeer kort (max 8 woorden). Houd "description" in clusters ook kort (max 15 woorden). Retourneer UITSLUITEND geldig JSON zonder markdown code blocks:
         {
           "keywords": [
             {
@@ -164,7 +164,7 @@ class RunKeywordResearchJob implements ShouldQueue
               "search_intent": "informational|commercial|transactional|navigational",
               "difficulty": "easy|medium|hard",
               "volume_indication": "low|medium|high",
-              "notes": "korte uitleg waarom dit keyword relevant is"
+              "notes": "max 8 woorden waarom relevant"
             }
           ],
           "clusters": [
