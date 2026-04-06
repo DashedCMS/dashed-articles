@@ -8,6 +8,8 @@ use Dashed\DashedArticles\Filament\Resources\AuthorResource;
 use Dashed\DashedArticles\Filament\Resources\ArticleResource;
 use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource;
 use Dashed\DashedArticles\Filament\Resources\ArticleDraftResource;
+use Dashed\DashedArticles\Filament\Resources\ContentClusterResource;
+use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource;
 use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
 
 class DashedArticlesPlugin implements Plugin
@@ -25,6 +27,8 @@ class DashedArticlesPlugin implements Plugin
                 ArticleCategoryResource::class,
                 AuthorResource::class,
                 ArticleDraftResource::class,
+                KeywordResearchResource::class,
+                ContentClusterResource::class,
             ])
             ->pages([
                 ArticlesSettingsPage::class,

@@ -19,7 +19,7 @@ class ArticleDraftResource extends Resource
     protected static ?string $navigationLabel = 'Artikelen schrijven';
     protected static ?string $modelLabel = 'Artikel concept';
     protected static ?string $pluralModelLabel = 'Artikel concepten';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function table(Table $table): Table
     {

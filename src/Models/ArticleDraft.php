@@ -3,12 +3,14 @@
 namespace Dashed\DashedArticles\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ArticleDraft extends Model
 {
     protected $table = 'dashed__article_drafts';
 
     protected $fillable = [
+        'content_cluster_id',
         'keyword',
         'locale',
         'instruction',
@@ -28,6 +30,11 @@ class ArticleDraft extends Model
         'article_content' => 'array',
         'applied_at' => 'datetime',
     ];
+
+    public function contentCluster(): BelongsTo
+    {
+        return $this->belongsTo(ContentCluster::class, 'content_cluster_id');
+    }
 
     public function setProgress(string $message): void
     {
