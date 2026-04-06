@@ -7,6 +7,10 @@ use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
+use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
 use Dashed\DashedArticles\Models\KeywordResearch;
 use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\Pages;
 
@@ -51,6 +55,37 @@ class KeywordResearchResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 DeleteAction::make(),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    BulkAction::make('rerun_selected')
+                        ->label('Opnieuw analyseren')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Zoekwoord onderzoeken opnieuw starten')
+                        ->modalDescription('De bestaande keywords en clusters worden verwijderd en het onderzoek wordt opnieuw gestart.')
+                        ->action(function (Collection $records): void {
+                            foreach ($records as $research) {
+                                $research->keywords()->delete();
+                                $research->contentClusters()->each(function ($cluster) {
+                                    $cluster->keywords()->detach();
+                                    $cluster->delete();
+                                });
+
+                                $research->update([
+                                    'status' => 'pending',
+                                    'progress_message' => null,
+                                    'error_message' => null,
+                                ]);
+
+                                RunKeywordResearchJob::dispatch($research->fresh())->delay(now()->addSeconds(3));
+                            }
+                        })
+                        ->deselectRecordsAfterCompletion(),
+
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
