@@ -108,7 +108,6 @@ class ViewKeywordResearch extends ViewRecord
                         ->searchable()
                         ->columnSpanFull(),
                 ])
-                ->columns(2)
                 ->action(function (array $data): void {
                     $cluster = ContentCluster::create([
                         'keyword_research_id' => $this->record->id,
