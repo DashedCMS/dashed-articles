@@ -298,17 +298,30 @@ class ViewArticleDraft extends ViewRecord
             }
 
             // Build content blocks
+            $defaults = ['in_container' => true, 'top_margin' => true, 'bottom_margin' => true];
             $blocks = [];
+
+            // Header block
+            $blocks[] = [
+                'type' => 'header',
+                'data' => array_merge($defaults, [
+                    'title' => $h1,
+                    'subtitle' => '',
+                    'buttons' => [],
+                    'image' => null,
+                    'opacity' => '0.7',
+                ]),
+            ];
 
             // Introduction block
             if (! empty($content['introduction'])) {
-                $blocks[] = ['type' => 'content', 'data' => ['content' => $content['introduction']]];
+                $blocks[] = ['type' => 'content', 'data' => array_merge($defaults, ['content' => $content['introduction']])];
             }
 
             // Section blocks
             foreach ($content['sections'] ?? [] as $section) {
                 if (! empty($section['content'])) {
-                    $blocks[] = ['type' => 'content', 'data' => ['content' => $section['content']]];
+                    $blocks[] = ['type' => 'content', 'data' => array_merge($defaults, ['content' => $section['content']])];
                 }
             }
 
@@ -321,18 +334,18 @@ class ViewArticleDraft extends ViewRecord
 
                 $blocks[] = [
                     'type' => 'faq',
-                    'data' => [
+                    'data' => array_merge($defaults, [
                         'title' => $content['faq']['title'] ?? 'Veelgestelde vragen',
                         'subtitle' => $content['faq']['subtitle'] ?? '',
                         'buttons' => [],
                         'questions' => $questions,
-                    ],
+                    ]),
                 ];
             }
 
             // Conclusion block
             if (! empty($content['conclusion'])) {
-                $blocks[] = ['type' => 'content', 'data' => ['content' => $content['conclusion']]];
+                $blocks[] = ['type' => 'content', 'data' => array_merge($defaults, ['content' => $content['conclusion']])];
             }
 
             // Create the article
