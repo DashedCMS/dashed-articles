@@ -297,55 +297,106 @@ class ViewArticleDraft extends ViewRecord
                 $counter++;
             }
 
-            // Build content blocks
-            $defaults = ['in_container' => true, 'top_margin' => true, 'bottom_margin' => true];
+            // Resolve available blocks and their default field values
+            cms()->activateBuilderBlockClasses();
+            $availableBlocks = collect(cms()->builder('blocks'))->keyBy(fn ($b) => $b->getName());
+
+            $headerBlock = $availableBlocks->get('header');
+            $contentBlock = $availableBlocks->get('content');
+
+            $missing = array_filter([
+                ! $headerBlock ? 'header' : null,
+                ! $contentBlock ? 'content' : null,
+            ]);
+
+            if (! empty($missing)) {
+                Notification::make()
+                    ->title('Ontbrekende blokken')
+                    ->body('De volgende blokken zijn niet gevonden in de CMS builder: ' . implode(', ', $missing) . '. Controleer of ze geregistreerd zijn in AppServiceProvider.')
+                    ->danger()
+                    ->send();
+                return;
+            }
+
+            // Extract defaults from block schema (Toggle fields with default true)
+            $blockDefaults = function ($block): array {
+                $defaults = [];
+                foreach ($block->getChildComponents() as $component) {
+                    if (! method_exists($component, 'getName') || ! $component->getName()) {
+                        // Group — recurse one level
+                        if (method_exists($component, 'getChildComponents')) {
+                            foreach ($component->getChildComponents() as $child) {
+                                if (method_exists($child, 'getName') && $child->getName()
+                                    && method_exists($child, 'getDefaultState')) {
+                                    $default = $child->getDefaultState();
+                                    if ($default !== null) {
+                                        $defaults[$child->getName()] = $default;
+                                    }
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                    if (method_exists($component, 'getDefaultState')) {
+                        $default = $component->getDefaultState();
+                        if ($default !== null) {
+                            $defaults[$component->getName()] = $default;
+                        }
+                    }
+                }
+                return $defaults;
+            };
+
+            $headerDefaults = $blockDefaults($headerBlock);
+            $contentDefaults = $blockDefaults($contentBlock);
+
             $blocks = [];
 
             // Header block
             $blocks[] = [
                 'type' => 'header',
-                'data' => array_merge($defaults, [
+                'data' => array_merge($headerDefaults, [
                     'title' => $h1,
-                    'subtitle' => '',
-                    'buttons' => [],
-                    'image' => null,
-                    'opacity' => '0.7',
                 ]),
             ];
 
             // Introduction block
             if (! empty($content['introduction'])) {
-                $blocks[] = ['type' => 'content', 'data' => array_merge($defaults, ['content' => $content['introduction']])];
+                $blocks[] = ['type' => 'content', 'data' => array_merge($contentDefaults, ['content' => $content['introduction']])];
             }
 
             // Section blocks
             foreach ($content['sections'] ?? [] as $section) {
                 if (! empty($section['content'])) {
-                    $blocks[] = ['type' => 'content', 'data' => array_merge($defaults, ['content' => $section['content']])];
+                    $blocks[] = ['type' => 'content', 'data' => array_merge($contentDefaults, ['content' => $section['content']])];
                 }
             }
 
-            // FAQ block
+            // FAQ block (optional — only if registered)
             if (! empty($content['faq']['questions'])) {
-                $questions = array_map(fn ($q) => [
-                    'question' => $q['question'] ?? '',
-                    'description' => $q['answer'] ?? '',
-                ], $content['faq']['questions']);
+                $faqBlock = $availableBlocks->get('faq');
+                if ($faqBlock) {
+                    $faqDefaults = $blockDefaults($faqBlock);
+                    $questions = array_map(fn ($q) => [
+                        'question' => $q['question'] ?? '',
+                        'description' => $q['answer'] ?? '',
+                    ], $content['faq']['questions']);
 
-                $blocks[] = [
-                    'type' => 'faq',
-                    'data' => array_merge($defaults, [
-                        'title' => $content['faq']['title'] ?? 'Veelgestelde vragen',
-                        'subtitle' => $content['faq']['subtitle'] ?? '',
-                        'buttons' => [],
-                        'questions' => $questions,
-                    ]),
-                ];
+                    $blocks[] = [
+                        'type' => 'faq',
+                        'data' => array_merge($faqDefaults, [
+                            'title' => $content['faq']['title'] ?? 'Veelgestelde vragen',
+                            'subtitle' => $content['faq']['subtitle'] ?? '',
+                            'buttons' => [],
+                            'questions' => $questions,
+                        ]),
+                    ];
+                }
             }
 
             // Conclusion block
             if (! empty($content['conclusion'])) {
-                $blocks[] = ['type' => 'content', 'data' => array_merge($defaults, ['content' => $content['conclusion']])];
+                $blocks[] = ['type' => 'content', 'data' => array_merge($contentDefaults, ['content' => $content['conclusion']])];
             }
 
             // Create the article
