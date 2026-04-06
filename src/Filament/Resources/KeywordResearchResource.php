@@ -15,7 +15,7 @@ class KeywordResearchResource extends Resource
     protected static ?string $model = KeywordResearch::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-magnifying-glass';
-    protected static string|\UnitEnum|null $navigationGroup = 'AI';
+    protected static string|\UnitEnum|null $navigationGroup = 'SEO';
     protected static ?string $navigationLabel = 'Zoekwoord onderzoek';
     protected static ?string $modelLabel = 'Zoekwoord onderzoek';
     protected static ?string $pluralModelLabel = 'Zoekwoord onderzoeken';

@@ -15,7 +15,7 @@ class ArticleDraftResource extends Resource
     protected static ?string $model = ArticleDraft::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-pencil-square';
-    protected static string|\UnitEnum|null $navigationGroup = 'AI';
+    protected static string|\UnitEnum|null $navigationGroup = 'SEO';
     protected static ?string $navigationLabel = 'Artikelen schrijven';
     protected static ?string $modelLabel = 'Artikel concept';
     protected static ?string $pluralModelLabel = 'Artikel concepten';

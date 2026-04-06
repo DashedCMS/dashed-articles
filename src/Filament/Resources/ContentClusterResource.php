@@ -22,7 +22,7 @@ class ContentClusterResource extends Resource
     protected static ?string $model = ContentCluster::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-group';
-    protected static string|\UnitEnum|null $navigationGroup = 'AI';
+    protected static string|\UnitEnum|null $navigationGroup = 'SEO';
     protected static ?string $navigationLabel = 'Content clusters';
     protected static ?string $modelLabel = 'Content cluster';
     protected static ?string $pluralModelLabel = 'Content clusters';
