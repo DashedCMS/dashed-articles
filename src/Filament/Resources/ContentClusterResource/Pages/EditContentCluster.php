@@ -42,7 +42,6 @@ class EditContentCluster extends EditRecord
                         ->rows(2)
                         ->columnSpanFull(),
                 ])
-                ->schemaColumns(2)
                 ->action(function (array $data): void {
                     $draft = ArticleDraft::create([
                         'content_cluster_id' => $this->record->id,

@@ -301,18 +301,17 @@ class ViewArticleDraft extends ViewRecord
             cms()->activateBuilderBlockClasses();
             $availableBlocks = collect(cms()->builder('blocks'))->keyBy(fn ($b) => $b->getName());
 
-            $headerBlock = $availableBlocks->get('header');
-            $contentBlock = $availableBlocks->get('content');
+            // Find header block: prefer name containing 'header', fall back to 'hero', skip if neither
+            $headerBlock = $availableBlocks->first(fn ($b) => str_contains($b->getName(), 'header'))
+                ?? $availableBlocks->first(fn ($b) => str_contains($b->getName(), 'hero'));
 
-            $missing = array_filter([
-                ! $headerBlock ? 'header' : null,
-                ! $contentBlock ? 'content' : null,
-            ]);
+            // Content block is required — abort with notification if missing
+            $contentBlock = $availableBlocks->first(fn ($b) => $b->getName() === 'content');
 
-            if (! empty($missing)) {
+            if (! $contentBlock) {
                 Notification::make()
-                    ->title('Ontbrekende blokken')
-                    ->body('De volgende blokken zijn niet gevonden in de CMS builder: ' . implode(', ', $missing) . '. Controleer of ze geregistreerd zijn in AppServiceProvider.')
+                    ->title('Blok niet gevonden')
+                    ->body("Het 'content' blok is niet gevonden in de CMS builder. Controleer of het geregistreerd is in AppServiceProvider.")
                     ->danger()
                     ->send();
                 return;
@@ -347,18 +346,20 @@ class ViewArticleDraft extends ViewRecord
                 return $defaults;
             };
 
-            $headerDefaults = $blockDefaults($headerBlock);
             $contentDefaults = $blockDefaults($contentBlock);
 
             $blocks = [];
 
-            // Header block
-            $blocks[] = [
-                'type' => 'header',
-                'data' => array_merge($headerDefaults, [
-                    'title' => $h1,
-                ]),
-            ];
+            // Header/hero block — only if one was found
+            if ($headerBlock) {
+                $headerDefaults = $blockDefaults($headerBlock);
+                $blocks[] = [
+                    'type' => $headerBlock->getName(),
+                    'data' => array_merge($headerDefaults, [
+                        'title' => $h1,
+                    ]),
+                ];
+            }
 
             // Introduction block
             if (! empty($content['introduction'])) {

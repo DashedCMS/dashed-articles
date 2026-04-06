@@ -2,13 +2,13 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
+use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
 use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
 use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
 use Dashed\DashedArticles\Models\KeywordResearch;
@@ -57,7 +57,7 @@ class KeywordResearchResource extends Resource
                 DeleteAction::make(),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
+                \Filament\Actions\BulkActionGroup::make([
                     BulkAction::make('rerun_selected')
                         ->label('Opnieuw analyseren')
                         ->icon('heroicon-o-arrow-path')
