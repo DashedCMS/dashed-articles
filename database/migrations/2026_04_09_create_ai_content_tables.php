@@ -8,25 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (! Schema::hasTable('dashed__article_drafts')) {
-            Schema::create('dashed__article_drafts', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('content_cluster_id')->nullable()->constrained('dashed__content_clusters')->nullOnDelete();
-                $table->string('keyword');
-                $table->string('locale', 10)->default('nl');
-                $table->text('instruction')->nullable();
-                $table->string('status')->default('pending');
-                $table->text('progress_message')->nullable();
-                $table->text('error_message')->nullable();
-                $table->json('content_plan')->nullable();
-                $table->json('article_content')->nullable();
-                $table->nullableMorphs('subject');
-                $table->unsignedBigInteger('applied_by')->nullable();
-                $table->timestamp('applied_at')->nullable();
-                $table->timestamps();
-            });
-        }
-
         if (! Schema::hasTable('dashed__keyword_researches')) {
             Schema::create('dashed__keyword_researches', function (Blueprint $table) {
                 $table->id();
@@ -79,6 +60,25 @@ return new class extends Migration
         if (Schema::hasTable('dashed__article_drafts') && ! Schema::hasColumn('dashed__article_drafts', 'content_cluster_id')) {
             Schema::table('dashed__article_drafts', function (Blueprint $table) {
                 $table->foreignId('content_cluster_id')->nullable()->after('id')->constrained('dashed__content_clusters')->nullOnDelete();
+            });
+        }
+
+        if (! Schema::hasTable('dashed__article_drafts')) {
+            Schema::create('dashed__article_drafts', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('content_cluster_id')->nullable()->constrained('dashed__content_clusters')->nullOnDelete();
+                $table->string('keyword');
+                $table->string('locale', 10)->default('nl');
+                $table->text('instruction')->nullable();
+                $table->string('status')->default('pending');
+                $table->text('progress_message')->nullable();
+                $table->text('error_message')->nullable();
+                $table->json('content_plan')->nullable();
+                $table->json('article_content')->nullable();
+                $table->nullableMorphs('subject');
+                $table->unsignedBigInteger('applied_by')->nullable();
+                $table->timestamp('applied_at')->nullable();
+                $table->timestamps();
             });
         }
     }
