@@ -3,20 +3,18 @@
 namespace Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
+use Filament\Infolists\Components\TextEntry;
 use Dashed\DashedArticles\Models\ContentCluster;
-use Dashed\DashedArticles\Models\KeywordResearch;
+use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
 use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource;
-use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\RelationManagers\ContentClustersRelationManager;
 use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\RelationManagers\KeywordsRelationManager;
+use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\RelationManagers\ContentClustersRelationManager;
 
 class ViewKeywordResearch extends ViewRecord
 {
@@ -25,7 +23,8 @@ class ViewKeywordResearch extends ViewRecord
     public function infolist(Schema $schema): Schema
     {
         return $schema->schema([
-            Section::make(fn ($record) => in_array($record->status, ['pending', 'running'])
+            Section::make(
+                fn ($record) => in_array($record->status, ['pending', 'running'])
                 ? ($record->progress_message ?: 'Zoekwoorden worden geanalyseerd...')
                 : 'Status'
             )
@@ -45,7 +44,8 @@ class ViewKeywordResearch extends ViewRecord
                         ->dateTime('d-m-Y H:i'),
                 ])
                 ->columns(4)
-                ->extraAttributes(fn ($record) => in_array($record->status, ['pending', 'running'])
+                ->extraAttributes(
+                    fn ($record) => in_array($record->status, ['pending', 'running'])
                     ? ['wire:poll.3s' => 'refreshPolledData']
                     : []
                 )

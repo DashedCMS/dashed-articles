@@ -2,16 +2,17 @@
 
 namespace Dashed\DashedArticles\Filament\Resources;
 
-use Filament\Actions\BulkAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
+use Filament\Actions\BulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Collection;
-use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
+use Dashed\DashedCore\Classes\ClaudeHelper;
 use Dashed\DashedArticles\Models\KeywordResearch;
+use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
 use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\Pages;
 
 class KeywordResearchResource extends Resource
@@ -24,6 +25,11 @@ class KeywordResearchResource extends Resource
     protected static ?string $modelLabel = 'Zoekwoord onderzoek';
     protected static ?string $pluralModelLabel = 'Zoekwoord onderzoeken';
     protected static ?int $navigationSort = 1;
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ClaudeHelper::isConnected();
+    }
 
     public static function table(Table $table): Table
     {

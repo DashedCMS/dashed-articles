@@ -2,13 +2,13 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\Pages;
 
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\Pages\CreateRecord;
 use Dashed\DashedArticles\Models\KeywordResearch;
+use Dashed\DashedArticles\Jobs\RunKeywordResearchJob;
 use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource;
 
 class CreateKeywordResearch extends CreateRecord

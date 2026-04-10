@@ -6,10 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Dashed\DashedCore\Classes\ClaudeHelper;
+use Dashed\DashedCore\Models\Customsetting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Dashed\DashedArticles\Models\ArticleDraft;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedCore\Exceptions\ClaudeRateLimitException;
 
 class GenerateArticleJob implements ShouldQueue
@@ -29,7 +29,8 @@ class GenerateArticleJob implements ShouldQueue
 
     public function __construct(
         public ArticleDraft $draft,
-    ) {}
+    ) {
+    }
 
     public function failed(\Throwable $exception): void
     {
@@ -59,9 +60,11 @@ class GenerateArticleJob implements ShouldQueue
             $research = ClaudeHelper::runJsonPrompt($this->buildResearchPrompt($keyword, $siteName, $brandContext, $instructionLine, $internalLinks, $locale));
         } catch (ClaudeRateLimitException $e) {
             $this->releaseWithRateLimitMessage($e, 'Stap 1/3');
+
             return;
         } catch (\Throwable $e) {
             $this->draft->setProgress("Stap 1/3 — mislukt, opnieuw proberen... ({$e->getMessage()})");
+
             throw $e;
         }
 
@@ -72,9 +75,11 @@ class GenerateArticleJob implements ShouldQueue
             $outline = ClaudeHelper::runJsonPrompt($this->buildOutlinePrompt($keyword, $research, $siteName, $brandContext, $instructionLine, $internalLinks, $locale));
         } catch (ClaudeRateLimitException $e) {
             $this->releaseWithRateLimitMessage($e, 'Stap 2/3');
+
             return;
         } catch (\Throwable $e) {
             $this->draft->setProgress("Stap 2/3 — mislukt, opnieuw proberen... ({$e->getMessage()})");
+
             throw $e;
         }
 
@@ -92,14 +97,17 @@ class GenerateArticleJob implements ShouldQueue
 
         // Intro
         $this->draft->setProgress("Stap 3/3 — Introductie schrijven...");
+
         try {
             $introResult = ClaudeHelper::runJsonPrompt($this->buildIntroPrompt($keyword, $outline, $research, $siteName, $brandContext, $instructionLine, $locale), maxTokens: 1000);
             $introduction = $introResult['introduction'] ?? '';
         } catch (ClaudeRateLimitException $e) {
             $this->releaseWithRateLimitMessage($e, 'Introductie');
+
             return;
         } catch (\Throwable $e) {
             $this->draft->setProgress("Introductie — mislukt, opnieuw proberen... ({$e->getMessage()})");
+
             throw $e;
         }
 
@@ -108,6 +116,7 @@ class GenerateArticleJob implements ShouldQueue
         foreach ($sections as $i => $section) {
             $sectionNum = $i + 1;
             $this->draft->setProgress("Stap 3/3 — Sectie {$sectionNum}/{$totalSections} schrijven: \"{$section['h2']}\"...");
+
             try {
                 $sectionResult = ClaudeHelper::runJsonPrompt(
                     $this->buildSectionPrompt($keyword, $outline, $section, $research, $siteName, $brandContext, $instructionLine, $internalLinks, $locale),
@@ -119,6 +128,7 @@ class GenerateArticleJob implements ShouldQueue
                 ];
             } catch (ClaudeRateLimitException $e) {
                 $this->releaseWithRateLimitMessage($e, "Sectie {$sectionNum}");
+
                 return;
             } catch (\Throwable) {
                 // Skip failed section, continue
@@ -132,6 +142,7 @@ class GenerateArticleJob implements ShouldQueue
         // FAQ
         $faq = null;
         $this->draft->setProgress('Stap 3/3 — FAQ schrijven...');
+
         try {
             $faqResult = ClaudeHelper::runJsonPrompt($this->buildFaqPrompt($keyword, $outline, $research, $siteName, $brandContext, $instructionLine, $locale), maxTokens: 1500);
             if (! empty($faqResult['questions'])) {
@@ -143,6 +154,7 @@ class GenerateArticleJob implements ShouldQueue
             }
         } catch (ClaudeRateLimitException $e) {
             $this->releaseWithRateLimitMessage($e, 'FAQ');
+
             return;
         } catch (\Throwable) {
             // FAQ is optional, continue
@@ -151,11 +163,13 @@ class GenerateArticleJob implements ShouldQueue
         // Conclusion
         $conclusion = '';
         $this->draft->setProgress('Stap 3/3 — Conclusie schrijven...');
+
         try {
             $conclusionResult = ClaudeHelper::runJsonPrompt($this->buildConclusionPrompt($keyword, $outline, $research, $siteName, $brandContext, $instructionLine, $locale), maxTokens: 800);
             $conclusion = $conclusionResult['conclusion'] ?? '';
         } catch (ClaudeRateLimitException $e) {
             $this->releaseWithRateLimitMessage($e, 'Conclusie');
+
             return;
         } catch (\Throwable) {
             // Conclusion is optional, continue
@@ -180,23 +194,29 @@ class GenerateArticleJob implements ShouldQueue
     private function collectInternalLinks(): string
     {
         $links = [];
+
         try {
             foreach (cms()->builder('routeModels') as $routeModel) {
                 $class = $routeModel['class'];
                 $nameField = $routeModel['nameField'] ?? 'name';
                 foreach ($class::limit(30)->get() as $r) {
                     $url = method_exists($r, 'getUrl') ? ($r->getUrl($this->draft->locale) ?? '') : '';
-                    if (! $url) continue;
+                    if (! $url) {
+                        continue;
+                    }
                     $name = '';
+
                     try {
                         $name = method_exists($r, 'getTranslation') ? $r->getTranslation($nameField, $this->draft->locale) : $r->$nameField;
-                    } catch (\Throwable) {}
+                    } catch (\Throwable) {
+                    }
                     if ($name) {
                         $links[] = "- {$name}: {$url}";
                     }
                 }
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         return implode("\n", array_slice($links, 0, 50));
     }

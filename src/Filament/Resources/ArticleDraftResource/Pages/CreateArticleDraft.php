@@ -2,14 +2,14 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\ArticleDraftResource\Pages;
 
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
+use Dashed\DashedCore\Classes\Locales;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Schemas\Schema;
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedArticles\Jobs\GenerateArticleJob;
 use Dashed\DashedArticles\Models\ArticleDraft;
+use Dashed\DashedArticles\Jobs\GenerateArticleJob;
 use Dashed\DashedArticles\Filament\Resources\ArticleDraftResource;
 
 class CreateArticleDraft extends CreateRecord

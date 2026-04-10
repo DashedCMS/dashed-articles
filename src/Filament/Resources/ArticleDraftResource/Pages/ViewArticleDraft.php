@@ -4,16 +4,13 @@ namespace Dashed\DashedArticles\Filament\Resources\ArticleDraftResource\Pages;
 
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Select;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Textarea;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Dashed\DashedCore\Classes\Locales;
+use Filament\Infolists\Components\TextEntry;
 use Dashed\DashedArticles\Jobs\GenerateArticleJob;
-use Dashed\DashedArticles\Models\ArticleDraft;
 use Dashed\DashedArticles\Filament\Resources\ArticleDraftResource;
 
 class ViewArticleDraft extends ViewRecord
@@ -25,7 +22,8 @@ class ViewArticleDraft extends ViewRecord
         return $schema->schema([
 
             // Status + progress while generating
-            Section::make(fn ($record) => in_array($record->status, ['pending', 'planning', 'writing'])
+            Section::make(
+                fn ($record) => in_array($record->status, ['pending', 'planning', 'writing'])
                 ? ($record->progress_message ?: 'Artikel wordt gegenereerd...')
                 : 'Status'
             )
@@ -44,7 +42,8 @@ class ViewArticleDraft extends ViewRecord
                         ->dateTime('d-m-Y H:i'),
                 ])
                 ->columns(4)
-                ->extraAttributes(fn ($record) => in_array($record->status, ['pending', 'planning', 'writing'])
+                ->extraAttributes(
+                    fn ($record) => in_array($record->status, ['pending', 'planning', 'writing'])
                     ? ['wire:poll.3s' => 'refreshPolledData']
                     : []
                 )
@@ -268,6 +267,7 @@ class ViewArticleDraft extends ViewRecord
 
         if (empty($content)) {
             Notification::make()->title('Geen inhoud beschikbaar')->danger()->send();
+
             return;
         }
 
@@ -277,12 +277,14 @@ class ViewArticleDraft extends ViewRecord
             foreach (cms()->builder('routeModels') as $routeModel) {
                 if (str_contains($routeModel['class'], 'Article') && ! str_contains($routeModel['class'], 'Category') && ! str_contains($routeModel['class'], 'Author')) {
                     $articleClass = $routeModel['class'];
+
                     break;
                 }
             }
 
             if (! $articleClass || ! class_exists($articleClass)) {
                 Notification::make()->title('Artikel module niet gevonden')->danger()->send();
+
                 return;
             }
 
@@ -314,6 +316,7 @@ class ViewArticleDraft extends ViewRecord
                     ->body("Het 'content' blok is niet gevonden in de CMS builder. Controleer of het geregistreerd is in AppServiceProvider.")
                     ->danger()
                     ->send();
+
                 return;
             }
 
@@ -334,6 +337,7 @@ class ViewArticleDraft extends ViewRecord
                                 }
                             }
                         }
+
                         continue;
                     }
                     if (method_exists($component, 'getDefaultState')) {
@@ -343,6 +347,7 @@ class ViewArticleDraft extends ViewRecord
                         }
                     }
                 }
+
                 return $defaults;
             };
 

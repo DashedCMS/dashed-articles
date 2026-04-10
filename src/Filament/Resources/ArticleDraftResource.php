@@ -5,8 +5,9 @@ namespace Dashed\DashedArticles\Filament\Resources;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\ViewAction;
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
+use Dashed\DashedCore\Classes\ClaudeHelper;
 use Dashed\DashedArticles\Models\ArticleDraft;
 use Dashed\DashedArticles\Filament\Resources\ArticleDraftResource\Pages;
 
@@ -20,6 +21,11 @@ class ArticleDraftResource extends Resource
     protected static ?string $modelLabel = 'Artikel concept';
     protected static ?string $pluralModelLabel = 'Artikel concepten';
     protected static ?int $navigationSort = 3;
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ClaudeHelper::isConnected();
+    }
 
     public static function table(Table $table): Table
     {

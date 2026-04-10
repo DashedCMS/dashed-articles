@@ -3,18 +3,18 @@
 namespace Dashed\DashedArticles\Filament\Resources;
 
 use Filament\Tables\Table;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
+use Filament\Actions\EditAction;
+use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Filters\SelectFilter;
+use Dashed\DashedCore\Classes\ClaudeHelper;
 use Dashed\DashedArticles\Models\ContentCluster;
-use Dashed\DashedArticles\Models\Keyword;
 use Dashed\DashedArticles\Filament\Resources\ContentClusterResource\Pages;
 
 class ContentClusterResource extends Resource
@@ -27,6 +27,11 @@ class ContentClusterResource extends Resource
     protected static ?string $modelLabel = 'Content cluster';
     protected static ?string $pluralModelLabel = 'Content clusters';
     protected static ?int $navigationSort = 2;
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ClaudeHelper::isConnected();
+    }
 
     public static function form(Schema $schema): Schema
     {

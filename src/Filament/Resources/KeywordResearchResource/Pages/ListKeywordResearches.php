@@ -5,10 +5,10 @@ namespace Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\Pages
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
+use Dashed\DashedCore\Classes\Locales;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Dashed\DashedCore\Classes\ClaudeHelper;
-use Dashed\DashedCore\Classes\Locales;
 use Dashed\DashedArticles\Jobs\AutoKeywordDiscoveryJob;
 use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource;
 

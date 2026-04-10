@@ -6,11 +6,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Dashed\DashedCore\Classes\ClaudeHelper;
+use Dashed\DashedCore\Models\Customsetting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Dashed\DashedArticles\Models\KeywordResearch;
 use Dashed\DashedCore\Exceptions\ClaudeRateLimitException;
-use Dashed\DashedCore\Models\Customsetting;
 
 class AutoKeywordDiscoveryJob implements ShouldQueue
 {
@@ -25,7 +25,8 @@ class AutoKeywordDiscoveryJob implements ShouldQueue
     public function __construct(
         public string $locale,
         public int $maxTopics = 10,
-    ) {}
+    ) {
+    }
 
     public function handle(): void
     {
@@ -44,6 +45,7 @@ class AutoKeywordDiscoveryJob implements ShouldQueue
             );
         } catch (ClaudeRateLimitException) {
             $this->release(60);
+
             return;
         }
 
@@ -94,14 +96,16 @@ class AutoKeywordDiscoveryJob implements ShouldQueue
                         if ($name) {
                             $names[] = $name;
                         }
-                    } catch (\Throwable) {}
+                    } catch (\Throwable) {
+                    }
                 }
 
                 if (! empty($names)) {
                     $content[$label] = $names;
                 }
             }
-        } catch (\Throwable) {}
+        } catch (\Throwable) {
+        }
 
         return $content;
     }

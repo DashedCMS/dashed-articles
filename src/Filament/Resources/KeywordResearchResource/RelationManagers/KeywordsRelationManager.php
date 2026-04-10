@@ -2,16 +2,16 @@
 
 namespace Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\RelationManagers;
 
+use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Tables\Table;
-use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class KeywordsRelationManager extends RelationManager
 {

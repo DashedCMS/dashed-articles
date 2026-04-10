@@ -4,13 +4,13 @@ namespace Dashed\DashedArticles\Filament\Actions;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Dashed\DashedCore\Classes\Locales;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Dashed\DashedCore\Classes\ClaudeHelper;
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedArticles\Jobs\GenerateArticleJob;
 use Dashed\DashedArticles\Models\ArticleDraft;
+use Dashed\DashedArticles\Jobs\GenerateArticleJob;
 use Dashed\DashedArticles\Filament\Resources\ArticleDraftResource;
 
 class GenerateArticleAction extends Action
@@ -72,8 +72,10 @@ class GenerateArticleAction extends Action
         if (! $this->record) {
             return '';
         }
+
         try {
             $locale = app()->getLocale();
+
             return method_exists($this->record, 'getTranslation')
                 ? ($this->record->getTranslation('name', $locale) ?: '')
                 : ($this->record->name ?? '');

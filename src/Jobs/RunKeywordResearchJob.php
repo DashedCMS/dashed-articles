@@ -5,14 +5,14 @@ namespace Dashed\DashedArticles\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Dashed\DashedArticles\Models\Keyword;
 use Dashed\DashedCore\Classes\ClaudeHelper;
+use Dashed\DashedCore\Models\Customsetting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Dashed\DashedArticles\Models\ContentCluster;
-use Dashed\DashedArticles\Models\Keyword;
 use Dashed\DashedArticles\Models\KeywordResearch;
 use Dashed\DashedCore\Exceptions\ClaudeRateLimitException;
-use Dashed\DashedCore\Models\Customsetting;
 
 class RunKeywordResearchJob implements ShouldQueue
 {
@@ -31,7 +31,8 @@ class RunKeywordResearchJob implements ShouldQueue
 
     public function __construct(
         public KeywordResearch $research,
-    ) {}
+    ) {
+    }
 
     public function failed(\Throwable $exception): void
     {
@@ -60,9 +61,11 @@ class RunKeywordResearchJob implements ShouldQueue
         } catch (ClaudeRateLimitException $e) {
             $this->research->setProgress("Rate limit bereikt (poging {$attempt}/{$this->tries}), wordt over ~1 minuut hervat.");
             $this->release(60);
+
             return;
         } catch (\Throwable $e) {
             $this->research->setProgress("Mislukt, opnieuw proberen... ({$e->getMessage()})");
+
             throw $e;
         }
 
