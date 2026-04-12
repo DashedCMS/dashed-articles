@@ -17,8 +17,6 @@ use Dashed\DashedArticles\Livewire\ShowArticles;
 use Dashed\DashedArticles\Models\ArticleCategory;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Dashed\DashedArticles\Filament\Pages\Settings\ArticlesSettingsPage;
-use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\RelationManagers\KeywordsRelationManager;
-use Dashed\DashedArticles\Filament\Resources\KeywordResearchResource\RelationManagers\ContentClustersRelationManager;
 
 class DashedArticlesServiceProvider extends PackageServiceProvider
 {
@@ -30,16 +28,6 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
         Livewire::component('articles.show-authors', ShowAuthors::class);
-
-        // Filament relation managers (must be registered explicitly for package discovery)
-        Livewire::component(
-            'dashed.dashed-articles.filament.resources.keyword-research-resource.relation-managers.keywords-relation-manager',
-            KeywordsRelationManager::class,
-        );
-        Livewire::component(
-            'dashed.dashed-articles.filament.resources.keyword-research-resource.relation-managers.content-clusters-relation-manager',
-            ContentClustersRelationManager::class,
-        );
 
         //        if (config('dashed-articles.registerDefaultBuilderBlocks', true)) {
         //            cms()->builder('builderBlockClasses', [
