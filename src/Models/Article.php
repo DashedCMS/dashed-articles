@@ -157,6 +157,8 @@ class Article extends Model
 
         View::share('article', $article);
         View::share('model', $article);
+        app()->instance('dashed.current_visitable', $article);
+        request()->attributes->set('dashed.current_visitable', $article);
         View::share('breadcrumbs', $article->breadcrumbs());
         View::share('page', $page ?: $article);
 
