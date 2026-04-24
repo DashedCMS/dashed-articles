@@ -29,7 +29,6 @@ class Article extends Model
         'name',
         'slug',
         'content',
-        'image',
         'excerpt',
     ];
 
