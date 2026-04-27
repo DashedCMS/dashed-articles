@@ -24,6 +24,8 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
 
     public function bootingPackage()
     {
+        cms()->registerNavigationGroup('Artikelen', 20);
+
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
