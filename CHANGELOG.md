@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-articles` will be documented in this file.
 
+## v4.1.0 - 2026-05-07
+
+### Added
+- "Sorteren"-header-action op `ListArticleCategories` via `Dashed\DashedCore\Filament\Concerns\HasNestableSortingAction`. Artikelcategorieën kunnen via slepen genested en geordend worden. Vereist `dashed-core` v4.6.0+.
+
 ## v4.0.12 - 2026-04-27
 
 - `DashedArticlesServiceProvider::bootingPackage()` registreert de "Artikelen" navigatiegroep via `cms()->registerNavigationGroup('Artikelen', 20)` zodat consumer projecten zonder dashed-articles geen lege groep meer in de Filament-sidebar krijgen. Vereist dashed-core v4.2.0+.
