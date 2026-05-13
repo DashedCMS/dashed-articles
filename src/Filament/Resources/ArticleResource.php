@@ -126,7 +126,9 @@ class ArticleResource extends Resource
                 TextColumn::make('author.name')
                     ->label('Auteur')
                     ->sortable(),
+                static::lastEditedColumn(),
             ], static::visitableTableColumns()))
+            ->modifyQueryUsing(fn ($query) => static::modifyTableQueryForLastEdited($query))
             ->filters([
                 SelectFilter::make('category')
                     ->label('Categorie')
