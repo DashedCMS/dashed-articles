@@ -3,7 +3,6 @@
 namespace Dashed\DashedArticles\Models;
 
 use Spatie\SchemaOrg\Schema;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Support\Facades\App;
 use Dashed\DashedCore\Classes\Sites;
@@ -11,6 +10,7 @@ use Illuminate\Support\Facades\View;
 use Dashed\DashedCore\Classes\Locales;
 use Illuminate\Database\Eloquent\Model;
 use Dashed\DashedCore\Models\Customsetting;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
