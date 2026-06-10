@@ -29,6 +29,7 @@ class ArticleAuthor extends Model
     public $translatable = [
         'name',
         'slug',
+        'content',
     ];
 
     protected $casts = [

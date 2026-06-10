@@ -2,6 +2,14 @@
 
 All notable changes to `dashed-articles` will be documented in this file.
 
+## v4.2.0 - 2026-06-10
+
+### Added
+- Het contentblok (`content`) van een auteur is nu vertaalbaar. `content` is toegevoegd aan `ArticleAuthor::$translatable` zodat de automatische vertaling (DeepL/AI) de blokken meeneemt, gelijk aan `Article`. Voorheen werden alleen `name` en `slug` van een auteur vertaald.
+
+### Changed
+- Bestaande auteur-content (een platte lijst builder-blokken) wordt via de migratie `2026_06_10_090000_make_author_content_translatable` omgezet naar de locale-keyed structuur (`{"<locale>": [...]}`) die Spatie's `HasTranslations` verwacht. Reeds locale-keyed waarden blijven ongemoeid.
+
 ## v4.1.0 - 2026-05-07
 
 ### Added
