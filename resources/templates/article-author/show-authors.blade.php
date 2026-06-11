@@ -7,7 +7,7 @@
 
             @if($blockData['subtitle'] ?? false)
                 <p class="mt-6 text-lg/8 text-gray-600">
-                    {!! $blockData['subtitle'] !!}
+                    {{ $blockData['subtitle'] }}
                 </p>
             @endif
         </div>
