@@ -224,6 +224,18 @@ MARKDOWN,
         cms()->registerRouteModel(Article::class, 'Artikel', 'Artikelen');
         cms()->registerRouteModel(ArticleCategory::class, 'Artikel categorie', 'Artikel categorieen');
         cms()->registerRouteModel(ArticleAuthor::class, 'Artikel auteur', 'Artikel auteurs');
+
+        cms()->registerContentQualityModel(
+            \Dashed\DashedArticles\Models\Article::class,
+            \Dashed\DashedArticles\Filament\Resources\ArticleResource::class,
+            'Artikel'
+        );
+        cms()->registerContentQualityModel(
+            \Dashed\DashedArticles\Models\ArticleCategory::class,
+            \Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource::class,
+            'Artikelcategorie'
+        );
+
         cms()->registerSettingsPage(ArticlesSettingsPage::class, 'Artikel');
 
         $package
