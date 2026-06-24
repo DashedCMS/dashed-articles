@@ -235,6 +235,11 @@ MARKDOWN,
             \Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource::class,
             'Artikelcategorie'
         );
+        cms()->registerContentQualityModel(
+            \Dashed\DashedArticles\Models\ArticleAuthor::class,
+            \Dashed\DashedArticles\Filament\Resources\AuthorResource::class,
+            'Auteur'
+        );
 
         cms()->registerSettingsPage(ArticlesSettingsPage::class, 'Artikel');
 
