@@ -174,6 +174,22 @@ MARKDOWN,
             'edit_article_author' => 'Artikel auteurs bewerken',
             'delete_article_author' => 'Artikel auteurs verwijderen',
         ]);
+
+        cms()->registerContentQualityModel(
+            \Dashed\DashedArticles\Models\Article::class,
+            \Dashed\DashedArticles\Filament\Resources\ArticleResource::class,
+            'Artikel'
+        );
+        cms()->registerContentQualityModel(
+            \Dashed\DashedArticles\Models\ArticleCategory::class,
+            \Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource::class,
+            'Artikelcategorie'
+        );
+        cms()->registerContentQualityModel(
+            \Dashed\DashedArticles\Models\ArticleAuthor::class,
+            \Dashed\DashedArticles\Filament\Resources\AuthorResource::class,
+            'Auteur'
+        );
     }
 
     public static function builderBlocks()
@@ -224,22 +240,6 @@ MARKDOWN,
         cms()->registerRouteModel(Article::class, 'Artikel', 'Artikelen');
         cms()->registerRouteModel(ArticleCategory::class, 'Artikel categorie', 'Artikel categorieen');
         cms()->registerRouteModel(ArticleAuthor::class, 'Artikel auteur', 'Artikel auteurs');
-
-        cms()->registerContentQualityModel(
-            \Dashed\DashedArticles\Models\Article::class,
-            \Dashed\DashedArticles\Filament\Resources\ArticleResource::class,
-            'Artikel'
-        );
-        cms()->registerContentQualityModel(
-            \Dashed\DashedArticles\Models\ArticleCategory::class,
-            \Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource::class,
-            'Artikelcategorie'
-        );
-        cms()->registerContentQualityModel(
-            \Dashed\DashedArticles\Models\ArticleAuthor::class,
-            \Dashed\DashedArticles\Filament\Resources\AuthorResource::class,
-            'Auteur'
-        );
 
         cms()->registerSettingsPage(ArticlesSettingsPage::class, 'Artikel');
 
