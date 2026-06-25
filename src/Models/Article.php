@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Dashed\DashedCore\Models\Customsetting;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Dashed\DashedCore\Models\Concerns\HasSearchIndex;
 use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,7 @@ use Dashed\LaravelLocalization\Facades\LaravelLocalization;
 
 class Article extends Model
 {
+    use HasSearchIndex;
     use LogsActivity;
     use HasCustomBlocks;
     use IsVisitable;
