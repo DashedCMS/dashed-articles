@@ -51,19 +51,19 @@ class ArticlesSettingsPage extends Page implements HasSchemas
         foreach ($sites as $site) {
             $newSchema = [
                 Select::make("article_overview_page_id_{$site['id']}")
-                    ->label('Artikel overview pagina')
+                    ->label(__('Artikel overview pagina'))
                     ->searchable()
                     ->preload()
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
                 Select::make("article_category_overview_page_id_{$site['id']}")
-                    ->label('Artikel category overview pagina')
+                    ->label(__('Artikel category overview pagina'))
                     ->searchable()
                     ->preload()
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
                 Toggle::make("article_use_category_in_url_{$site['id']}")
-                    ->label('Gebruik categorie in url'),
+                    ->label(__('Gebruik categorie in url')),
                 Select::make("article_author_overview_page_id_{$site['id']}")
-                    ->label('Artikel auteurs overview pagina')
+                    ->label(__('Artikel auteurs overview pagina'))
                     ->searchable()
                     ->preload()
                     ->options(PageModel::thisSite($site['id'])->pluck('name', 'id')),
@@ -96,7 +96,7 @@ class ArticlesSettingsPage extends Page implements HasSchemas
         }
 
         Notification::make()
-            ->title('De artikel instellingen zijn opgeslagen')
+            ->title(__('De artikel instellingen zijn opgeslagen'))
             ->success()
             ->send();
 

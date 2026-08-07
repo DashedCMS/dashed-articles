@@ -67,10 +67,10 @@ class ArticleResource extends Resource
     {
         return $schema
             ->schema([
-                Section::make('Content')->columnSpanFull()
+                Section::make(__('Content'))->columnSpanFull()
                     ->schema(array_merge([
                         TextInput::make('name')
-                            ->label('Name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->reactive()
@@ -81,17 +81,17 @@ class ArticleResource extends Resource
                                 }
                             }),
                         TextInput::make('slug')
-                            ->label('Slug')
+                            ->label(__('Slug'))
                             ->unique('dashed__articles', 'slug', fn ($record) => $record)
-                            ->helperText('Laat leeg om automatisch te laten genereren')
+                            ->helperText(__('Laat leeg om automatisch te laten genereren'))
                             ->maxLength(255),
                         Select::make('author_id')
-                            ->label('Auteur')
+                            ->label(__('Auteur'))
                             ->nullable()
                             ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                             ->relationship('author', 'name'),
                         Select::make('category_id')
-                            ->label('Categorie')
+                            ->label(__('Categorie'))
                             ->nullable()
                             ->searchable()
                             ->preload()
@@ -100,14 +100,14 @@ class ArticleResource extends Resource
                         Textarea::make('excerpt')
                             ->name('Korte tekst'),
                         mediaHelper()->field('image', 'Hoofd afbeelding', isImage: true)
-                            ->helperText('Deze wordt gebruikt voor de overzichtspagina pagina'),
+                            ->helperText(__('Deze wordt gebruikt voor de overzichtspagina pagina')),
                         cms()->getFilamentBuilderBlock(),
                     ], static::customBlocksTab('articleBlocks')))
                     ->columns(2),
-                Section::make('Globale informatie')->columnSpanFull()
+                Section::make(__('Globale informatie'))->columnSpanFull()
                     ->schema(static::publishTab())
                     ->collapsed(fn ($livewire) => $livewire instanceof EditArticle),
-                Section::make('Meta data')->columnSpanFull()
+                Section::make(__('Meta data'))->columnSpanFull()
                     ->schema(static::metadataTab()),
             ]);
     }
@@ -117,26 +117,26 @@ class ArticleResource extends Resource
         return $table
             ->columns(array_merge([
                 TextColumn::make('name')
-                    ->label('Naam')
+                    ->label(__('Naam'))
                     ->sortable()
                     ->searchable(query: SearchQuery::make()),
                 TextColumn::make('category.name')
-                    ->label('Categorie')
+                    ->label(__('Categorie'))
                     ->sortable(),
                 TextColumn::make('author.name')
-                    ->label('Auteur')
+                    ->label(__('Auteur'))
                     ->sortable(),
                 static::lastEditedColumn(),
             ], static::visitableTableColumns()))
             ->modifyQueryUsing(fn ($query) => static::modifyTableQueryForLastEdited($query))
             ->filters([
                 SelectFilter::make('category')
-                    ->label('Categorie')
+                    ->label(__('Categorie'))
                     ->searchable()
                     ->multiple()
                     ->relationship('category', 'name'),
                 SelectFilter::make('author')
-                    ->label('Auteur')
+                    ->label(__('Auteur'))
                     ->multiple()
                     ->relationship('author', 'name'),
             ])
@@ -145,7 +145,7 @@ class ArticleResource extends Resource
             ->filters([
                 TrashedFilter::make(),
                 SelectFilter::make('category')
-                    ->label('Categorie')
+                    ->label(__('Categorie'))
                     ->searchable()
                     ->multiple()
                     ->preload()

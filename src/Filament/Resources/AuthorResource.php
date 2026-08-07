@@ -61,10 +61,10 @@ class AuthorResource extends Resource
     {
         return $schema
             ->schema([
-                Section::make('Content')->columnSpanFull()
+                Section::make(__('Content'))->columnSpanFull()
                     ->schema(array_merge([
                         TextInput::make('name')
-                            ->label('Name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->lazy()
@@ -74,19 +74,19 @@ class AuthorResource extends Resource
                                 }
                             }),
                         TextInput::make('slug')
-                            ->label('Slug')
+                            ->label(__('Slug'))
                             ->unique('dashed__article_authors', 'slug', fn ($record) => $record)
-                            ->helperText('Laat leeg om automatisch te laten genereren')
+                            ->helperText(__('Laat leeg om automatisch te laten genereren'))
                             ->required()
                             ->maxLength(255),
                         mediaHelper()->field('image', 'Afbeelding', isImage: true),
                         cms()->getFilamentBuilderBlock(),
                     ], static::customBlocksTab('articleAuthorBlocks')))
                     ->columns(2),
-                Section::make('Globale informatie')->columnSpanFull()
+                Section::make(__('Globale informatie'))->columnSpanFull()
                     ->schema(static::publishTab())
                     ->collapsed(fn ($livewire) => $livewire instanceof EditArticle),
-                Section::make('Meta data')->columnSpanFull()
+                Section::make(__('Meta data'))->columnSpanFull()
                     ->schema(static::metadataTab()),
             ]);
     }
@@ -96,11 +96,11 @@ class AuthorResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Naam')
+                    ->label(__('Naam'))
                     ->sortable()
                     ->searchable(query: SearchQuery::make()),
                 TextColumn::make('articles_count')
-                    ->label('Aantal artikelen')
+                    ->label(__('Aantal artikelen'))
                     ->sortable()
                     ->counts('articles'),
             ])

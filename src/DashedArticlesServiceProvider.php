@@ -198,25 +198,25 @@ MARKDOWN,
     {
         $defaultBlocks = [
             Block::make('all-articles')
-                ->label('Alle artikelen')
+                ->label(__('Alle artikelen'))
                 ->schema([]),
             Block::make('few-articles')
-                ->label('Paar artikelen')
+                ->label(__('Paar artikelen'))
                 ->schema([
                     AppServiceProvider::getDefaultBlockFields(),
                     TextInput::make('title')
-                        ->label('Titel'),
+                        ->label(__('Titel')),
                     TextInput::make('subtitle')
-                        ->label('Subtitel'),
+                        ->label(__('Subtitel')),
                 ]),
             Block::make('all-authors')
-                ->label('Alle auteurs')
+                ->label(__('Alle auteurs'))
                 ->schema([
                     AppServiceProvider::getDefaultBlockFields(),
                     TextInput::make('title')
-                        ->label('Titel'),
+                        ->label(__('Titel')),
                     TextInput::make('subtitle')
-                        ->label('Subtitel'),
+                        ->label(__('Subtitel')),
                 ]),
         ];
 
