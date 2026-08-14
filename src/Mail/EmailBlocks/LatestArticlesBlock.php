@@ -4,7 +4,6 @@ namespace Dashed\DashedArticles\Mail\EmailBlocks;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Dashed\DashedArticles\Models\Article;
 use Filament\Forms\Components\Builder\Block;
 use Dashed\DashedCore\Mail\EmailBlocks\EmailBlock;
 
@@ -50,7 +49,12 @@ class LatestArticlesBlock extends EmailBlock
         // De selectie wordt op het moment van verzenden bepaald, één keer voor
         // de hele ronde. Zie CampaignRenderer: rendert de code per ontvanger,
         // dan draait deze query net zo vaak als er ontvangers zijn.
-        $articles = Article::isPublic()
+        //
+        // visibleArticles() en niet Article::isPublic(): zie het commentaar
+        // daar. Zonder de embargodatums en de sitefilter vult deze automatische
+        // selectie zich met artikelen die de site zelf nog verbergt, of die van
+        // een andere site horen te zijn.
+        $articles = ArticlesBlock::visibleArticles($context['siteId'] ?? null)
             ->orderByDesc('created_at')
             ->limit($limit)
             ->get();

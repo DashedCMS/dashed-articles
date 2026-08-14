@@ -56,16 +56,56 @@ class ArticlesBlock extends EmailBlock
             return '';
         }
 
-        // isPublic() erbij: een artikel dat op de site verborgen is, hoort
-        // ook niet in een mail te staan. En sortBy houdt de volgorde aan die
-        // de redacteur koos, want whereIn geeft die niet terug.
-        $articles = Article::isPublic()
+        // visibleArticles() erbij: een artikel dat op de site verborgen is of
+        // nog een embargodatum heeft, hoort ook niet in een mail te staan. En
+        // sortBy houdt de volgorde aan die de redacteur koos, want whereIn
+        // geeft die niet terug.
+        $articles = self::visibleArticles($context['siteId'] ?? null)
             ->whereIn('id', $ids)
             ->get()
             ->sortBy(fn (Article $article): int => array_search($article->id, $ids, true))
             ->values();
 
         return self::renderArticles($articles, (int) ($blockData['columns'] ?? 2), $context);
+    }
+
+    /**
+     * Zichtbare artikelen voor de mail: openbaar, binnen de embargodatums, en
+     * op de juiste site als die bekend is.
+     *
+     * Volgt de front-end (IsVisitable::scopePublicShowable(), zie
+     * Article::getResults()/getAllResults()): ook start_date en end_date
+     * afdwingen, niet alleen isPublic(). Zonder die datums wordt een artikel
+     * met een toekomstige publicatiedatum alsnog gemaild, met een leesknop
+     * naar een pagina die de site nog verbergt.
+     *
+     * Geen thisSite()->publicShowable() zoals de front-end: publicShowable()
+     * roept zelf óók thisSite() aan, zonder site-parameter, en valt dan terug
+     * op Sites::getActive(). In een queue-job (waar deze mail vandaan komt)
+     * is er geen HTTP-request om de actieve site uit af te leiden, dus dat
+     * zou de eerst geconfigureerde site pakken in plaats van de site van de
+     * campagne, en met twee thisSite()-voorwaarden (één correct, één
+     * toevallig) blijft er op een echte multisite-installatie niets meer
+     * over. whereJsonContains() met een expliciet siteId omzeilt dat. Ook
+     * geen admin-uitzondering zoals scopePublicShowable() die kent: een
+     * nieuwsbrief gaat naar echte ontvangers, niet naar een ingelogde
+     * beheerder die aan het bladeren is.
+     */
+    public static function visibleArticles(?string $siteId): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = Article::isPublic();
+
+        if ($siteId) {
+            $query->whereJsonContains('site_ids', $siteId);
+        }
+
+        return $query
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now());
+            });
     }
 
     /**
