@@ -57,6 +57,7 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
         // binding bestaat op dat moment nog niet.
         if (method_exists(cms(), 'emailBlock') && app()->bound('newsletter')) {
             cms()->emailBlock('articles', \Dashed\DashedArticles\Mail\EmailBlocks\ArticlesBlock::class);
+            cms()->emailBlock('latest-articles', \Dashed\DashedArticles\Mail\EmailBlocks\LatestArticlesBlock::class);
         }
 
         cms()->registerResourceDocs(
