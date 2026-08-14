@@ -49,6 +49,16 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             new DashedArticlesPlugin(),
         ]);
 
+        // Twee guards: dashed-core kan ouder zijn en emailBlock nog niet
+        // kennen, en een site zonder nieuwsbriefmodule heeft deze blokken
+        // nergens voor nodig. In bootingPackage() en niet in
+        // configurePackage(): die laatste draait in de register-fase, en
+        // dashed-articles komt daarin vóór dashed-newsletter, dus de
+        // binding bestaat op dat moment nog niet.
+        if (method_exists(cms(), 'emailBlock') && app()->bound('newsletter')) {
+            cms()->emailBlock('articles', \Dashed\DashedArticles\Mail\EmailBlocks\ArticlesBlock::class);
+        }
+
         cms()->registerResourceDocs(
             resource: \Dashed\DashedArticles\Filament\Resources\ArticleResource::class,
             title: 'Artikelen',
@@ -249,6 +259,7 @@ MARKDOWN,
             ->hasConfigFile([
                 'dashed-articles',
             ])
+            ->hasViews()
             ->name(self::$name);
     }
 
