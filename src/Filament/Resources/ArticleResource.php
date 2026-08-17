@@ -5,6 +5,7 @@ namespace Dashed\DashedArticles\Filament\Resources;
 use UnitEnum;
 use BackedEnum;
 use Filament\Tables\Table;
+use Dashed\DashedCore\Filament\Columns\LocaleStatusColumn;
 use Illuminate\Support\Str;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
@@ -120,6 +121,7 @@ class ArticleResource extends Resource
                     ->label(__('Naam'))
                     ->sortable()
                     ->searchable(query: SearchQuery::make()),
+                LocaleStatusColumn::make('name'),
                 TextColumn::make('category.name')
                     ->label(__('Categorie'))
                     ->sortable(),
