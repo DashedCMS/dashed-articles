@@ -60,6 +60,12 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
             cms()->emailBlock('latest-articles', \Dashed\DashedArticles\Mail\EmailBlocks\LatestArticlesBlock::class);
         }
 
+        // Zelfde guard, plus een op het register: dit pakket kan tegen een
+        // oudere nieuwsbrief draaien die de AI-generator nog niet kent.
+        if (app()->bound('newsletter') && class_exists(\Dashed\DashedNewsletter\Ai\SearchToolRegistry::class)) {
+            \Dashed\DashedNewsletter\Facades\Newsletter::registerSearchTool(new \Dashed\DashedArticles\Ai\NewsletterTools\ArticleSearchTool());
+        }
+
         cms()->registerResourceDocs(
             resource: \Dashed\DashedArticles\Filament\Resources\ArticleResource::class,
             title: 'Artikelen',
