@@ -26,6 +26,21 @@ class DashedArticlesServiceProvider extends PackageServiceProvider
     {
         cms()->registerNavigationGroup('Artikelen', 40);
 
+        // Mobiele app: "Artikelen" als module-pagina in het app-menu (opent de
+        // admin-lijst via een magic-link). Dubbel geguard: mobile-api kan
+        // ontbreken of een oudere versie zonder app-pages-registry zijn.
+        if (class_exists(\Dashed\DashedMobileApi\MobileApiRegistry::class)) {
+            $mobileApi = $this->app->make(\Dashed\DashedMobileApi\MobileApiRegistry::class);
+            if (method_exists($mobileApi, 'registerAppPage')) {
+                $mobileApi->registerAppPage('articles', [
+                    'title' => 'Artikelen',
+                    'icon' => 'newspaper-outline',
+                    'group' => 'Modules',
+                    'url' => fn () => \Dashed\DashedArticles\Filament\Resources\ArticleResource::getUrl(),
+                ]);
+            }
+        }
+
         //Frontend components
         Livewire::component('articles.like-article', LikeArticle::class);
         Livewire::component('articles.show-articles', ShowArticles::class);
