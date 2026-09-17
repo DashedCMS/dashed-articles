@@ -224,6 +224,40 @@ MARKDOWN,
                 'Auteur'
             );
         }
+
+        self::registreerVertaalbaren();
+    }
+
+    /**
+     * Artikelen, artikelcategorieën en auteurs aanmelden bij het
+     * vertaalstatus-overzicht.
+     *
+     * Statisch, naar het voorbeeld van registreerBewaartermijnen() in
+     * dashed-core. Guarded op class_exists: dashed-articles kent
+     * dashed-translations niet als afhankelijkheid.
+     */
+    public static function registreerVertaalbaren(): void
+    {
+        if (! class_exists(\Dashed\DashedTranslations\Classes\Translatables\TranslatableRegistry::class)) {
+            return;
+        }
+
+        $registry = \Dashed\DashedTranslations\Classes\Translatables\TranslatableRegistry::class;
+        $make = fn (string $model) => \Dashed\DashedTranslations\Classes\Translatables\Translatable::make($model)->group(__('Artikelen'));
+
+        $registry::register($make(\Dashed\DashedArticles\Models\Article::class)
+            ->label(__('Artikelen'))
+            ->contentChildren()
+            ->urlVia(\Dashed\DashedArticles\Filament\Resources\ArticleResource::class));
+
+        $registry::register($make(\Dashed\DashedArticles\Models\ArticleCategory::class)
+            ->label(__('Artikelcategorieën'))
+            ->contentChildren()
+            ->urlVia(\Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource::class));
+
+        $registry::register($make(\Dashed\DashedArticles\Models\ArticleAuthor::class)
+            ->label(__('Auteurs'))
+            ->urlVia(\Dashed\DashedArticles\Filament\Resources\AuthorResource::class));
     }
 
     public static function builderBlocks()
