@@ -316,7 +316,8 @@ MARKDOWN,
                 'dashed-articles',
             ])
             ->hasViews()
-            ->name(self::$name);
+            ->name(self::$name)
+            ->hasTranslations();
     }
 
     public static function createDefaultPages(): void
