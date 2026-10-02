@@ -32,6 +32,7 @@ use Dashed\DashedArticles\Filament\Resources\ArticleResource\Pages\CreateArticle
 
 class ArticleResource extends Resource
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesResourceLabels;
     use \Dashed\DashedCore\Filament\Concerns\HasLastEditedColumn;
 
     use HasCustomBlocksTab;

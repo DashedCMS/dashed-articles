@@ -28,6 +28,7 @@ use Dashed\DashedArticles\Filament\Resources\ArticleCategoryResource\Pages\ListA
 
 class ArticleCategoryResource extends Resource
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesResourceLabels;
     use HasCustomBlocksTab;
     use HasVisitableTab;
     use Translatable;

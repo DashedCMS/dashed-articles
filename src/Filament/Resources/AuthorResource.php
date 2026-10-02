@@ -28,6 +28,7 @@ use Dashed\DashedArticles\Filament\Resources\AuthorResource\Pages\CreateAuthor;
 
 class AuthorResource extends Resource
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesResourceLabels;
     use Translatable;
     use HasCustomBlocksTab;
     use HasVisitableTab;
