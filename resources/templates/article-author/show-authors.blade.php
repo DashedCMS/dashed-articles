@@ -1,9 +1,11 @@
 <div class="bg-white @if($blockData['top_margin'] ?? false) pt-16 sm:pt-24 @endif @if($blockData['bottom_margin'] ?? false) pb-16 sm:pb-24 @endif">
     <x-container :show="$blockData['in_container'] ?? true">
         <div class="mx-auto max-w-2xl lg:mx-0">
-            <h2 class="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
-                {{ $blockData['title'] }}
-            </h2>
+            @if($blockData['title'] ?? false)
+                <h2 class="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                    {{ $blockData['title'] }}
+                </h2>
+            @endif
 
             @if($blockData['subtitle'] ?? false)
                 <p class="mt-6 text-lg/8 text-gray-600">

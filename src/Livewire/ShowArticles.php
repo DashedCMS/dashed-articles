@@ -4,7 +4,9 @@ namespace Dashed\DashedArticles\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Locked;
 use Dashed\DashedArticles\Models\Article;
+use Dashed\DashedArticles\Models\ArticleAuthor;
 use Dashed\DashedArticles\Models\ArticleCategory;
 
 class ShowArticles extends Component
@@ -19,7 +21,10 @@ class ShowArticles extends Component
     public ?string $search = null;
 
     public string $sort = 'latest';
+    // Worden alleen bij het mounten gezet; de browser hoort ze niet te kunnen overschrijven.
+    #[Locked]
     public ?int $authorId = null;
+    #[Locked]
     public array $blockData = [];
 
     public function mount(int $pagination = 12, ?int $category = null, ?string $search = null, string $sort = 'latest', ?int $authorId = null, array $blockData = [])
@@ -48,7 +53,9 @@ class ShowArticles extends Component
 
     public function render()
     {
-        $categoryIds = $this->categoryIds;
+        // $categoryIds is publiek en dus door de client te zetten: alleen platte id's doorlaten,
+        // anders gooit whereIn() op geneste arrays.
+        $categoryIds = array_values(array_filter((array) $this->categoryIds, 'is_numeric'));
         $search = $this->search;
         $sort = $this->sort;
         $pagination = $this->pagination;
@@ -57,6 +64,9 @@ class ShowArticles extends Component
         $view = $authorId ? 'show-author-articles' : 'show-articles';
 
         return view(config('dashed-core.site_theme', 'dashed') . '.articles.' . $view, [
+            // De auteursview leest $articleAuthor. Bij de eerste render komt die uit de pagina,
+            // maar bij een Livewire-update (pagineren) bestond hij niet meer.
+            ...($authorId ? ['articleAuthor' => ArticleAuthor::find($authorId)] : []),
             'articles' => Article::query()
                 ->publicShowable()
                 ->when($authorId, function ($query, $authorId) {

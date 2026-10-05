@@ -4,6 +4,7 @@ namespace Dashed\DashedArticles\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Locked;
 use Dashed\DashedArticles\Models\ArticleAuthor;
 
 class ShowAuthors extends Component
@@ -16,6 +17,7 @@ class ShowAuthors extends Component
     public ?string $search = null;
 
     public string $sort = 'latest';
+    #[Locked]
     public array $blockData = [];
 
     public function mount(array $blockData = [], int $pagination = 12, ?string $search = null, string $sort = 'latest')
