@@ -2,10 +2,8 @@
 
 namespace Dashed\DashedArticles\Models;
 
-use Spatie\SchemaOrg\Schema;
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Support\Facades\App;
-use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\View;
 use Dashed\DashedCore\Classes\Locales;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +12,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Dashed\DashedArticles\Classes\Seo\ArticleSchema;
 use Dashed\DashedCore\Models\Concerns\HasSearchIndex;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
-use Dashed\LaravelLocalization\Facades\LaravelLocalization;
 
 class Article extends Model
 {
@@ -157,7 +155,6 @@ class Article extends Model
         }
 
         self::setSeoMetadata($article);
-        self::setAlternateUrls($article);
 
         View::share('article', $article);
         View::share('model', $article);
@@ -180,65 +177,17 @@ class Article extends Model
         foreach ($defaultMetadata as $key => $value) {
             seo()->metaData($key, $value);
         }
-
-        self::setArticleSchema($article);
     }
 
-    private static function setArticleSchema($article)
+    /**
+     * The head reads this through ModelSchemas: the Article JSON-LD with the
+     * author as Person and the publisher as a reference to the Organization.
+     * The hreflang links come from getUrl() in the head; the alternateUrls
+     * that used to be set here were read by nothing.
+     */
+    public function seoSchemas(): array
     {
-        $schema = Schema::article()
-            ->name(seo()->metaData('metaTitle'))
-            ->url(request()->url())
-            ->image(seo()->metaData('metaImage'))
-            ->description($article->contentBlocks['excerpt'] ?? '')
-            ->author(self::resolveAuthor($article))
-            ->publisher(self::resolvePublisher($article))
-            ->dateCreated($article->created_at)
-            ->dateModified($article->updated_at)
-            ->datePublished($article->start_date ?: $article->created_at)
-            ->inLanguage(LaravelLocalization::getCurrentLocaleName())
-            ->thumbnailUrl(mediaHelper()->getSingleMedia(seo()->metaData('metaImage'))->url ?? '')
-            ->timeRequired("PT{$article->readingTimeMinutes}M")
-            ->wordCount(str_word_count($article->getPlainContent()))
-            ->articleBody($article->getPlainContent())
-            ->text($article->getPlainContent())
-            ->about($article->category ? $article->category->name : '');
-
-        $schemas = seo()->metaData('schemas') ?? [];
-        $schemas['article'] = $schema;
-        seo()->metaData('schemas', $schemas);
-    }
-
-    private static function resolveAuthor($article)
-    {
-        return $article->author ? $article->author->name : [
-            '@type' => 'Organization',
-            '@id' => request()->url() . '#organization',
-        ];
-    }
-
-    private static function resolvePublisher($article)
-    {
-        return self::resolveAuthor($article);
-    }
-
-    private static function setAlternateUrls($article)
-    {
-        $currentLocale = App::getLocale();
-        $alternateUrls = [];
-
-        foreach (Sites::getLocales() as $locale) {
-            if ($locale['id'] !== $currentLocale) {
-                LaravelLocalization::setLocale($locale['id']);
-                App::setLocale($locale['id']);
-                $alternateUrls[$locale['id']] = $article->getUrl();
-            }
-        }
-
-        LaravelLocalization::setLocale($currentLocale);
-        App::setLocale($currentLocale);
-
-        seo()->metaData('alternateUrls', $alternateUrls);
+        return ['article' => ArticleSchema::for($this)];
     }
 
     public function breadcrumbs(): array

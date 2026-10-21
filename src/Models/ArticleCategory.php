@@ -4,7 +4,6 @@ namespace Dashed\DashedArticles\Models;
 
 use Dashed\DashedPages\Models\Page;
 use Illuminate\Support\Facades\App;
-use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\View;
 use Dashed\DashedCore\Classes\Locales;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +12,6 @@ use Dashed\DashedCore\Models\Concerns\IsVisitable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
-use Dashed\LaravelLocalization\Facades\LaravelLocalization;
 
 class ArticleCategory extends Model
 {
@@ -95,7 +93,6 @@ class ArticleCategory extends Model
 
         $model = $slugComponents ? $articleCategory : $page;
         self::setSeoMetadata($model);
-        self::setAlternateUrls($model);
         self::shareViewData($model, $articleCategory, $page);
 
         return view($viewPath);
@@ -127,23 +124,6 @@ class ArticleCategory extends Model
         if ($model->metadata && $model->metadata->image) {
             seo()->metaData('metaImage', $model->metadata->image);
         }
-    }
-
-    private static function setAlternateUrls($model)
-    {
-        $correctLocale = App::getLocale();
-        $alternateUrls = collect(Sites::getLocales())
-            ->reject(fn ($locale) => $locale['id'] == $correctLocale)
-            ->mapWithKeys(function ($locale) use ($model) {
-                LaravelLocalization::setLocale($locale['id']);
-                App::setLocale($locale['id']);
-
-                return [$locale['id'] => $model->getUrl()];
-            });
-
-        LaravelLocalization::setLocale($correctLocale);
-        App::setLocale($correctLocale);
-        seo()->metaData('alternateUrls', $alternateUrls);
     }
 
     private static function shareViewData($model, $articleCategory, $page)
