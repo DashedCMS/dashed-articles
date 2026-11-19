@@ -195,6 +195,12 @@ MARKDOWN,
         Gate::policy(\Dashed\DashedArticles\Models\ArticleCategory::class, \Dashed\DashedArticles\Policies\ArticleCategoryPolicy::class);
         Gate::policy(\Dashed\DashedArticles\Models\ArticleAuthor::class, \Dashed\DashedArticles\Policies\ArticleAuthorPolicy::class);
 
+        // Doet mee met de goedkeuringsstroom van dashed-core (per site aan te
+        // zetten bij Instellingen, Goedkeuring; standaard uit).
+        cms()->builder('contentApprovalModels', [
+            Article::class => fn () => __('Artikelen'),
+        ]);
+
         cms()->registerRolePermissions('Artikelen', [
             'view_article' => 'Artikelen bekijken',
             'edit_article' => 'Artikelen bewerken',
@@ -226,6 +232,22 @@ MARKDOWN,
         }
 
         self::registreerVertaalbaren();
+        self::registreerContentkalender();
+    }
+
+    /**
+     * Artikelen op de contentkalender van dashed-core. Guarded: een oudere
+     * core kent ContentCalendar niet.
+     */
+    public static function registreerContentkalender(): void
+    {
+        if (! class_exists(\Dashed\DashedCore\Classes\Calendar\ContentCalendar::class)) {
+            return;
+        }
+
+        cms()->builder(\Dashed\DashedCore\Classes\Calendar\ContentCalendar::BUILDER, [
+            'articles' => \Dashed\DashedCore\Classes\Calendar\ContentCalendar::visitableSource('articles', \Dashed\DashedArticles\Models\Article::class, __('Artikel'), '#0d9488'),
+        ]);
     }
 
     /**

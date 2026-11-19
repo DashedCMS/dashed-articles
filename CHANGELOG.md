@@ -9,6 +9,11 @@ All notable changes to `dashed-articles` will be documented in this file.
 - **Artikelen van een auteur: `Undefined variable $articleAuthor` bij een Livewire-update.** `ShowArticles` geeft de auteur nu zelf aan de view mee.
 - `blockData` en `authorId` zijn vergrendeld en `categoryIds` wordt gefilterd op platte id's, zodat gemanipuleerde updates geen 500 meer geven.
 
+## v4.12.0 - 2026-11-19
+
+### Added
+- Doet mee met de goedkeuringsstroom, de voorvertoning en de contentkalender.
+
 ## v4.2.0 - 2026-06-10
 
 ### Added

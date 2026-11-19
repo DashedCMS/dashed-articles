@@ -148,6 +148,18 @@ class Article extends Model
             ->first();
     }
 
+    /**
+     * De voorvertoning vanuit het bewerkscherm (EditorPreview in dashed-core):
+     * dezelfde view en SEO als het echte artikel, voor dit niet-opgeslagen
+     * model. Null als het thema geen artikelview heeft.
+     */
+    public function renderEditorPreview()
+    {
+        $response = self::renderArticleView($this, null);
+
+        return is_string($response) ? null : $response;
+    }
+
     private static function renderArticleView($article, $page)
     {
         if (! View::exists(config('dashed-core.site_theme', 'dashed') . '.articles.show')) {
